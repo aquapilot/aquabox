@@ -12,8 +12,7 @@ package org.aquapilot;
 import org.aquapilot.common.CreditsUtil;
 import org.aquapilot.common.SystemUtil;
 import org.aquapilot.di.services.sensor.SensorService;
-import org.aquapilot.di.services.storage.StorageService;
-import sun.management.Sensor;
+import org.aquapilot.modules.storage.services.StorageService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,9 +38,8 @@ public class Aquabox {
     /**
      * Start the aquabox
      *
-     * @param environment
      */
-    public void start(Environment environment) {
+    public void start() {
        init();
 
     }

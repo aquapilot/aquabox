@@ -7,22 +7,18 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.modules.settings;
+package org.aquapilot.settings;
 
-import com.google.inject.AbstractModule;
-import org.aquapilot.di.services.storage.FirebaseServiceImpl;
-import org.aquapilot.di.services.storage.StorageService;
+import org.aquapilot.settings.model.Settings;
 
 /**
  * This class define the settings module
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class SettingsModule extends AbstractModule {
+public interface SettingsHelper {
 
-   @Override
-   protected void configure() {
-      bind(StorageService.class).to(FirebaseServiceImpl.class);
-   }
+   void saveSettings();
+   Settings loadSettings();
 
 }

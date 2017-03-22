@@ -12,9 +12,11 @@ package org.aquapilot;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import org.aquapilot.di.AppInjector;
 import org.aquapilot.di.services.Service;
-import org.aquapilot.modules.StorageModule;
+import org.aquapilot.modules.storage.StorageModule;
+import org.aquapilot.settings.SettingsHelper;
+import org.aquapilot.settings.SettingsHelperImpl;
+import org.aquapilot.settings.model.Settings;
 
 /**
  * This class is the main class of Aquabox.
@@ -26,16 +28,11 @@ import org.aquapilot.modules.StorageModule;
 public class Launcher {
 
     public static final void main(String[] args) {
-        Injector injector = Guice.createInjector(new StorageModule());
 
-       Service databaseConnectionPool = injector.getInstance(
-             Key.get(Service.class, DatabaseService.class));
-       databaseConnectionPool.start();
-       addShutdownHook(databaseConnectionPool);
+        SettingsHelper settingsHelper = new SettingsHelperImpl();
+settingsHelper.saveSettings();
+        Settings settings = settingsHelper.loadSettings();
+        Injector injector = Guice.createInjector(new StorageModule(settings));
 
-       Service webserver = injector.getInstance(
-             Key.get(Service.class, WebserverService.class));
-       webserver.start();
-       addShutdownHook(webserver);
     }
 }

@@ -7,16 +7,20 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.modules.settings;
+package org.aquapilot.modules.storage.services;
+
+import javax.inject.Singleton;
 
 /**
- * This class define the settings module
+ * This class implement StorageService with Firebase
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public interface SettingsService {
+@Singleton
+public class FirebaseServiceImpl implements StorageService {
 
-   void saveSettings();
-   Settings loadSettings();
-
+    @Override
+    public void saveAquaticSystem() {
+        // TODO: implement it
+    }
 }

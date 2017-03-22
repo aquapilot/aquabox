@@ -7,13 +7,15 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.modules.settings;
+package org.aquapilot.modules.storage.services;
 
 /**
- * This enum list supported databases for aquabox data storage. (FYI: Settings are not persisted in those database)
+ * Interface describing access to data storage
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum SupportedDatabase {
-   FIREBASE
+public interface StorageService {
+
+    void saveAquaticSystem();
+
 }

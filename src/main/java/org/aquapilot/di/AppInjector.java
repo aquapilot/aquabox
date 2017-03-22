@@ -12,8 +12,8 @@ package org.aquapilot.di;
 import com.google.inject.AbstractModule;
 import org.aquapilot.di.services.sensor.RF433ServiceImpl;
 import org.aquapilot.di.services.sensor.SensorService;
-import org.aquapilot.di.services.storage.FirebaseServiceImpl;
-import org.aquapilot.di.services.storage.StorageService;
+import org.aquapilot.modules.storage.services.FirebaseServiceImpl;
+import org.aquapilot.modules.storage.services.StorageService;
 
 /**
  * This class define which service implementation to  use for each guice di declared service.

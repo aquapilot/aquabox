@@ -7,8 +7,10 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.modules.settings;
+package org.aquapilot.settings.model;
 
+
+import org.aquapilot.modules.storage.SupportedDatabase;
 
 import javax.annotation.Generated;
 
@@ -100,44 +102,4 @@ public class Settings {
          return theObject;
       }
    }
-
-
-
-/*
-   private Settings(SettingsBuilder builder){
-      this.database = builder.database;
-   }
-
-   public static class SettingsBuilder {
-
-      public SupportedDatabase database;
-      private String databaseUser;
-      private String databasePassword;
-
-      public SettingsBuilder() {
-
-      }
-
-
-
-      public SettingsBuilder database(SupportedDatabase database) {
-         this.database = database;
-         return this;
-      }
-
-      public SettingsBuilder databaseUser(String databaseUser){
-         this.databaseUser = databaseUser;
-         return this;
-      }
-
-      public SettingsBuilder databasePassword(String databasePassword){
-         this.databasePassword = databasePassword;
-         return this;
-      }
-
-      public Settings build() {
-         return new Settings(this);
-      }
-
-   }*/
 }
