@@ -23,8 +23,8 @@ import org.aquapilot.modules.storage.services.StorageService;
 public class AppInjector extends AbstractModule {
     @Override
     protected void configure() {
-        //bind service -> implementation
-        bind(StorageService.class).to(FirebaseServiceImpl.class);
-        bind(SensorService.class).to(RF433ServiceImpl.class);
+       //bind service -> implementation
+       bind(StorageService.class).to(FirebaseServiceImpl.class);
+       bind(SensorService.class).to(RF433ServiceImpl.class);
     }
 }

@@ -10,9 +10,7 @@
 package org.aquapilot;
 
 import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import org.aquapilot.di.services.Service;
+import org.aquapilot.modules.logger.LoggerModule;
 import org.aquapilot.modules.storage.StorageModule;
 import org.aquapilot.settings.SettingsHelper;
 import org.aquapilot.settings.SettingsHelperImpl;
@@ -27,12 +25,16 @@ import org.aquapilot.settings.model.Settings;
  */
 public class Launcher {
 
+   private Launcher() {
+      // Hide the implicit public constructor
+   }
+
     public static final void main(String[] args) {
 
-        SettingsHelper settingsHelper = new SettingsHelperImpl();
-settingsHelper.saveSettings();
-        Settings settings = settingsHelper.loadSettings();
-        Injector injector = Guice.createInjector(new StorageModule(settings));
+       SettingsHelper settingsHelper = new SettingsHelperImpl();
+       Settings settings = settingsHelper.loadSettings();
+
+       Guice.createInjector(new LoggerModule(), new StorageModule(settings));
 
     }
 }

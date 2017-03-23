@@ -18,7 +18,6 @@ import org.aquapilot.settings.model.Settings;
  */
 public interface SettingsHelper {
 
-   void saveSettings();
    Settings loadSettings();
 
 }

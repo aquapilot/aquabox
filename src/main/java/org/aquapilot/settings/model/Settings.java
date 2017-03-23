@@ -56,7 +56,7 @@ public class Settings {
    @Generated(value = "Step Builder Generator Plugin")
    public interface DatabaseUserStep {
 
-      DatabasePasswordStep databaseUser(String databaseUser);
+      DatabasePasswordStep databaseUsername(String databaseUser);
    }
 
    @Generated(value = "Step Builder Generator Plugin")
@@ -84,7 +84,7 @@ public class Settings {
          return this;
       }
 
-      public DatabasePasswordStep databaseUser(String databaseUser) {
+      public DatabasePasswordStep databaseUsername(String databaseUser) {
 
          this.databaseUser = databaseUser;
          return this;
