@@ -11,7 +11,7 @@ package org.aquapilot;
 
 import org.aquapilot.common.CreditsUtil;
 import org.aquapilot.common.SystemUtil;
-import org.aquapilot.di.services.sensor.SensorService;
+import org.aquapilot.modules.sensors.SensorService;
 import org.aquapilot.modules.storage.services.StorageService;
 
 import javax.inject.Inject;
@@ -28,6 +28,8 @@ public class Aquabox {
     private StorageService storageService;
     private SensorService sensorService;
 
+    private static boolean started = false;
+
     //setter method injector
     @Inject
     public void setServices(StorageService storageService, SensorService sensorService) {
@@ -40,6 +42,17 @@ public class Aquabox {
      */
     public void start() {
         init();
+
+        started = true;
+        do {
+            System.out.println(".");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        while (started);
     }
 
     public void init() {

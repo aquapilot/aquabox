@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.di.services.sensor;
+package org.aquapilot.modules.sensors;
 
 /**
  * This class TODO

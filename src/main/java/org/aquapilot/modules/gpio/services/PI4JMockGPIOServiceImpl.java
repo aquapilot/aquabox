@@ -9,7 +9,10 @@
 
 package org.aquapilot.modules.gpio.services;
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.RaspiPin;
 
 import java.util.Collection;
 
@@ -18,10 +21,10 @@ import java.util.Collection;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class PI4JGPIOServiceImpl implements GPIOService {
+public class PI4JMockGPIOServiceImpl implements GPIOService {
 
-    private final static GpioController gpio = GpioFactory.getInstance();
-    
+    private final static GpioController gpio = null;
+
     public GpioController getGPIOController() {
         return gpio;
     }

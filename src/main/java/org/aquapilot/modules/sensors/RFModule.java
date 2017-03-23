@@ -7,21 +7,19 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.modules.gpio;
+package org.aquapilot.modules.sensors;
 
 import com.google.inject.AbstractModule;
-import org.aquapilot.modules.gpio.services.GPIOService;
-import org.aquapilot.modules.gpio.services.PI4JMockGPIOServiceImpl;
 
 /**
  * This Module provide ability to communicate with the raspberry pi GPIO
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class GPIOModule extends AbstractModule {
+public class RFModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(GPIOService.class).to(PI4JMockGPIOServiceImpl.class).asEagerSingleton();
+        bind(SensorService.class).to(RF433ServiceImpl.class).asEagerSingleton();
     }
 }
