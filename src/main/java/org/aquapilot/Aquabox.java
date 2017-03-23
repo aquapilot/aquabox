@@ -30,18 +30,16 @@ public class Aquabox {
 
     //setter method injector
     @Inject
-    public void setServices(StorageService storageService, SensorService sensorService){
-        this.storageService=storageService;
-        this.sensorService=sensorService;
+    public void setServices(StorageService storageService, SensorService sensorService) {
+        this.storageService = storageService;
+        this.sensorService = sensorService;
     }
 
     /**
      * Start the aquabox
-     *
      */
     public void start() {
-       init();
-
+        init();
     }
 
     public void init() {

@@ -43,6 +43,7 @@ public class SettingsHelperImpl implements SettingsHelper {
          SupportedDatabase database = null;
          String databaseTypeString = ini.get(DATABASE, TYPE);
 
+         // TODO: ugly code need to be refactored
          if (!isNullOrEmpty(databaseTypeString) && Enums
                .getIfPresent(SupportedDatabase.class, databaseTypeString)
                .isPresent()) {
