@@ -10,6 +10,7 @@
 package org.aquapilot;
 
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.aquapilot.modules.gpio.GPIOModule;
 import org.aquapilot.modules.logger.LoggerModule;
 import org.aquapilot.modules.storage.StorageModule;
@@ -35,9 +36,9 @@ public class Launcher {
         SettingsHelper settingsHelper = new SettingsHelperImpl();
         Settings settings = settingsHelper.loadSettings();
 
-        Guice.createInjector(new LoggerModule(), new StorageModule(settings), new GPIOModule());
+        Injector injector = Guice.createInjector(new LoggerModule(), new StorageModule(settings), new GPIOModule());
 
-        Aquabox aquabox = new Aquabox();
+        Aquabox aquabox = injector.getInstance(Aquabox.class);
         aquabox.start();
     }
 }
