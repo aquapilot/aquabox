@@ -17,7 +17,9 @@
         <google.guava.version>21.0</google.guava.version>
         <jfiglet.version>0.0.8</jfiglet.version>
         <slf4j.version>1.7.5</slf4j.version>
+        <logback.version>1.2.2</logback.version>
         <ini4j.version>0.5.4</ini4j.version>
+        <args4j.version>2.33</args4j.version>
     </properties>
     <dependencies>
         <dependency>
@@ -41,14 +43,35 @@
             <version>${jfiglet.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.loginject</groupId>
+            <artifactId>loginject-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.loginject</groupId>
+            <artifactId>loginject-guice</artifactId>
+            <version>1.0.0</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
             <version>${ini4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+            <version>${args4j.version}</version>
         </dependency>
         <!-- For testing purpose only -->
         <dependency>

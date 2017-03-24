@@ -19,6 +19,11 @@ import javax.inject.Singleton;
 @Singleton
 public class FirebaseServiceImpl implements StorageService {
 
+   public FirebaseServiceImpl() {
+
+      // log.debug("Initialize FirebaseServiceImpl");
+   }
+
     @Override
     public void saveAquaticSystem() {
         // TODO: implement it

@@ -23,7 +23,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 public class SettingsHelperImpl implements SettingsHelper {
 
-   private static final String SETTINGS_FILE = "settings.ini";
+   private static final String SETTINGS_FILE = "./settings.ini";
 
    private static final String DATABASE = "database";
    private static final String TYPE = "type";

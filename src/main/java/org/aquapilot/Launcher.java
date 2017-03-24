@@ -11,6 +11,8 @@ package org.aquapilot;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.aquapilot.cli.CLIHelper;
+import org.aquapilot.cli.CLIHelperImpl;
 import org.aquapilot.modules.gpio.GPIOModule;
 import org.aquapilot.modules.logger.LoggerModule;
 import org.aquapilot.modules.sensors.RFModule;
@@ -32,14 +34,17 @@ public class Launcher {
         // Hide the implicit public constructor
     }
 
-    public static final void main(String[] args) {
+   public static final void main(String[] args) {
 
-        SettingsHelper settingsHelper = new SettingsHelperImpl();
-        Settings settings = settingsHelper.loadSettings();
+      CLIHelper cli = new CLIHelperImpl(args);
 
-        Injector injector = Guice.createInjector(new LoggerModule(), new StorageModule(settings), new GPIOModule(), new RFModule());
+      SettingsHelper settingsHelper = new SettingsHelperImpl();
+      Settings settings = settingsHelper.loadSettings();
 
-        Aquabox aquabox = injector.getInstance(Aquabox.class);
-        aquabox.start();
+      Injector injector = Guice.createInjector(new LoggerModule(), new StorageModule(settings), new GPIOModule(),
+                                               new RFModule());
+
+      Aquabox aquabox = injector.getInstance(Aquabox.class);
+      aquabox.start();
     }
 }
