@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "aquamonitor-a3db9",
+  "private_key_id": "568e14a4934f0607025b1e89ef21ed8b03520015",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC4mOi674mwZP97\nfksfh3bydpMOlPdsWtQWjKGUzZy5FrOjvCYYEXu2O7uDPiF75tDXPDo2NkmxBVDW\n2eI/WnNtygPO9pikEb44+9M7E0zBT3M2QlKgCba0fD2iPXq1VwK2cvr29B12UtS4\nRcMVFiaFiipwxtvZjXeBTGODTIpC2oofHOi5/RKqJIJEtrN5UX7fBhYgSzwIaNuI\n1ZdMWksGe5kpUusAWpyylFR/0u7EoCq2nr+k+NMjMCju0E6gro625PkfX499e/Hm\nCdMIgQdYIxq117zvwzhUIyiNLFv84Bzba6AcjPv7pXh/oW9WtbuuEy4vW1s+nr6W\na2PTrsFTAgMBAAECggEBAKW7Kt+CZdUHqFRgW+PvxDwFdxwVZFpU5atlEUC+pSGL\nnza2mmDreW1wDXbUVk2eOguzl/PKI7kZs61hqv4EIDQGtgqfXQWYpHcWqFuWhUfd\nI+wn+XSTpARAszkxBzU97EKP0n/bRYRQ84iJoY8R9v3XwSjFcObOWuesBIACPPOt\nKQ+Nf0fJ6XR9dDqdAfx9KGvRY/r3BdUZmbDJnOQmOlPhV9upF/5ib2aDy+/Nr0eB\nv2ziQwWvr3dzg4d9KIFGbVaeF/pLRjmAMadbA9kYfhfDOWEAtyHMB88sMDNgvx3Y\nd4y3WLm1z+/e2y7oREr2cl89ibiDF9bJ68bmUtoArGECgYEA2w+JpxbpXj95l24V\nwtICY8/Qkaf65oNWdf+2TWDhVqnaZBM9PpzM1Civ7dpsXmCYQMAalBAD8Vm7bTfC\nBp4SxXYFfoCHnDd/GNXzLUjSK0ZDWrJq8MzHoZdbL+yMwboSfaYB4VKnQYSqGxao\nbaJepCMydnw7XvOtUiwq5at7BlECgYEA17ml0n0i/P3V8tJpYr5u5Li/6ipTH7Qb\naZocagsQQx2/jAnBKfPW4yqFRH1AqdIXDQPaX8idlNZMv71V3svA1L1OORujV4Jm\n34wuP/2PNw3GLfDsu9YLvslCaDGntMFNQuDayYsx4ghn4jmtSs1b13XJBeJl1kRL\nxncqMhyCUGMCgYA/+6vTGAgVtSiIqGjGvJxiFuLuiEfqaFYqpQPUWgW3UGkvbccn\nsJjLJw8rw+5/KmuODg41TPA54GG0JuMPF8CX2D8GkfgKEtOWp3cdtPVeGmm15gMC\nTm3IrvK9brQ2KWkZNhG6hG/B3UPqIZYUX6aQ/o7QuLyGoVnwdGIbLxkB4QKBgQCL\nF5hjb2vv03rvZdutXzwBHV4gjcmq12YVYNiRRzDlFXk7wc5aTm5vaisjTd8zn9Jd\nAe77c06neMVjm6CSVq2ufaDCEZ/v/JR37tqjR8nfpXHyjTUWp5xLF1lJ9To8waYf\nSPvIl4dCRkk1BBtH78EX20oSETe4P7Db9lmuldMwIQKBgEX/YxX1T9dSP5J8hV8d\nTWNonsAMxgoKPUxGvcsRR47iq/voE7XyTDCazYsNgL4HxzSSJUM5C8d1QYtK2jbV\nfoutBYVitqOLJ6nkw2TLS56cIrktqlsh1rN7pbE2YLQowuQnRFt+nXMBdKnhbhCf\n5U7eCvjy+e0oAhz5r8+wW3HE\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-dbats@aquamonitor-a3db9.iam.gserviceaccount.com",
+  "client_id": "102440341837236922915",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-dbats%40aquamonitor-a3db9.iam.gserviceaccount.com"
+}
