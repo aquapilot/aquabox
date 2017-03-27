@@ -12,6 +12,7 @@ package org.aquapilot.aquabox;
 import com.pi4j.io.gpio.RaspiPin;
 import org.aquapilot.aquabox.common.CreditsUtil;
 import org.aquapilot.aquabox.common.SystemUtil;
+import org.aquapilot.aquabox.common.asciiart.FigletFontAsciiArtConverter;
 import org.aquapilot.aquabox.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.modules.notifier.model.NewSensorDetectedNotification;
 import org.aquapilot.aquabox.modules.notifier.serices.NotifierService;
@@ -81,8 +82,9 @@ public class Aquabox {
     }
 
     public void init() {
-        CreditsUtil.printCredits();
-        SystemUtil.checkSystem();
+
+       new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
+       new SystemUtil().checkSystem();
 
         try {
             storageService.start();

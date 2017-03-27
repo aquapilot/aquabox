@@ -24,7 +24,7 @@ public class SystemUtil {
     /**
      * Check system requirements (available memory etc)
      */
-    public static final void checkSystem() {
+    public void checkSystem() {
 
         //LOGGER.info("Checking system ...");
 

@@ -12,13 +12,18 @@ package org.aquapilot.aquabox.modules.gpio.listener;
 import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
 
 /**
- * This class TODO
+ * This class is intended to provide async call when something occurs on the selected pins
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public interface GPIOPinStateListener {
 
-    void onPinStateChanged(StateChangedEvent event);
+   /**
+    * Called when a pin changed state
+    *
+    * @param event
+    */
+   void onPinStateChanged(StateChangedEvent event);
 
     default void onPinStateHigh() {
     }

@@ -9,7 +9,11 @@
 
 package org.aquapilot.aquabox.modules.gpio.services;
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.impl.SpiDeviceImpl;
 import org.aquapilot.aquabox.modules.gpio.event.PinState;
@@ -17,7 +21,13 @@ import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
 import org.aquapilot.aquabox.modules.gpio.listener.GPIOPinStateListener;
 
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +49,7 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
 
     Map<Pin, List<GPIOPinStateListener>> listeners = new HashMap<>();
 
-    private final static GpioController gpio = null;
+   private static final GpioController gpio = null;
 
     public GpioController getGPIOController() {
         return gpio;
@@ -82,18 +92,7 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
     @Override
     public SpiDevice getSPI() {
         // create SPI object instance for SPI for communication
-        SpiDeviceImpl spi = mock(SpiDeviceImpl.class);
-
-        // create a data buffer and initialize a conversion request payload
-        byte data[] = new byte[]{
-                (byte) 0b00000001
-        };
-
-        byte[] response = new byte[]{
-                (byte) 0b11111111
-        };
-
-        return spi;
+       return mock(SpiDeviceImpl.class);
     }
 
     @Override

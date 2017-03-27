@@ -17,10 +17,29 @@ package org.aquapilot.aquabox.cli;
  */
 public interface CLIHelper {
 
-    void showHelp();
+   /**
+    * Parse given arguments (usually coming from main(String[] args)).
+    * During the parsing it will automatically call the required methods (showHelp, showVersion)
+    *
+    * @param args arguments list (main(String[] args)
+    */
+   void parseArguments(String[] args);
 
-    void showVersion();
+   /**
+    * Display a list of accepted cli parameters with a description
+    */
+   void showHelp();
 
-    boolean isDebugEnabled();
+   /**
+    * Display the aquabox version
+    */
+   void showVersion();
+
+   /**
+    * When flag -d or --debug is given as args it enable the debug mode
+    *
+    * @return true when debug mode is enabled
+    */
+   boolean isDebugEnabled();
 
 }

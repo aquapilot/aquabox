@@ -9,7 +9,7 @@
 
 package org.aquapilot.aquabox.common;
 
-import com.github.lalyos.jfiglet.FigletFont;
+import org.aquapilot.aquabox.common.asciiart.AsciiArtConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,26 +22,32 @@ import java.io.IOException;
  */
 public class CreditsUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreditsUtil.class);
+   private AsciiArtConverter converter;
 
-    public static final void printCredits() {
+   private static final Logger LOGGER = LoggerFactory.getLogger(CreditsUtil.class);
 
-        StringBuilder creditsString = new StringBuilder();
-        creditsString.append("\n");
-        creditsString.append("================================================================\n");
+   public CreditsUtil(AsciiArtConverter converter) {
 
-        try {
-            String asciiArt = FigletFont.convertOneLine("Aquapilot");
-            creditsString.append(asciiArt);
+      this.converter = converter;
+   }
 
-        } catch (IOException e) {
-            LOGGER.warn("Could not generate ascii art for printCredits", e);
-        } finally {
-            creditsString.append("(C) Sébastien Vermeille <sebastien.vermeille@gmail.com> \n");
-            creditsString.append("Distributed under MIT license \n");
+   public void printCredits() {
 
-            creditsString.append("================================================================\n");
-            LOGGER.info(creditsString.toString());
-        }
-    }
+      StringBuilder creditsString = new StringBuilder();
+      creditsString.append("\n");
+      creditsString.append("================================================================\n");
+
+      try {
+         String asciiArt = converter.convertTextToAsciiArt("Aquapilot");
+         creditsString.append(asciiArt);
+      } catch (IOException e) {
+         LOGGER.warn("Could not generate ascii art for printCredits", e);
+      } finally {
+         creditsString.append("(C) Sébastien Vermeille <sebastien.vermeille@gmail.com> \n");
+         creditsString.append("Distributed under MIT license \n");
+
+         creditsString.append("================================================================\n");
+         LOGGER.info(creditsString.toString());
+      }
+   }
 }

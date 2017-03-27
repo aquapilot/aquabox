@@ -37,7 +37,8 @@ public class Launcher {
 
     public static final void main(String[] args) {
 
-        CLIHelper cli = new CLIHelperImpl(args);
+       CLIHelper cli = new CLIHelperImpl();
+       cli.parseArguments(args);
 
         SettingsHelper settingsHelper = new SettingsHelperImpl();
         Settings settings = settingsHelper.loadSettings();

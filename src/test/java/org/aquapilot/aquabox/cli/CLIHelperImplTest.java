@@ -9,49 +9,158 @@
 
 package org.aquapilot.aquabox.cli;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
- * Test Class
+ * Test CLIHelperImpl class
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public class CLIHelperImplTest {
 
+   private static CLIHelper cliHelper;
+
+   @Before
+   public void before() {
+
+      cliHelper = spy(new CLIHelperImpl());
+   }
+
     @Test
-    public void CLIHelperImpl_shouldNotThrowException_whenArgsIsNull() {
-        new CLIHelperImpl(null);
+    public void parseArguments_shouldNotThrowException_whenArgsIsNull() {
+
+       // Given
+       String[] nullArgs = null;
+
+       // When
+       cliHelper.parseArguments(nullArgs);
+
+       // Then
+       // No exception should occurs
     }
 
     @Test
-    public void CLIHelperImpl_shouldNotThrowException_whenArgsIsAnEmptyArray() {
-        String[] args = new String[0];
-        new CLIHelperImpl(args);
+    public void parseArguments_shouldNotThrowException_whenArgsIsAnEmptyArray() {
+
+       // Given
+       String[] emptyArgs = new String[0];
+
+       // When
+       cliHelper.parseArguments(emptyArgs);
+
+       // Then
+       // No exception should occurs
     }
 
     @Test
-    public void CLIHelperImpl_shouldShowHelp_whenRequested() throws Exception {
+    public void showHelp_shouldBeCalled_whenRequestedWithHelpFlag() throws Exception {
 
-        String[] args = new String[1];
-        args[0] = "-h";
+       // Given
+       String[] args = new String[] { "-h" };
 
-        CLIHelperImpl cliHelper = spy(new CLIHelperImpl(args));
+       // When
+       cliHelper.parseArguments(args);
 
-        doCallRealMethod().when(cliHelper).showHelp();
-
-        verify(cliHelper, times(1)).showHelp();
+       // Then
+       verify(cliHelper, times(1)).showHelp();
     }
 
-    @Test
-    public void showVersion() throws Exception {
+   @Test
+   public void showHelp_shouldBeCalled_whenRequestedWithAlternativeHelpFlag() throws Exception {
 
-    }
+      // Given
+      String[] args = new String[] { "--help" };
 
-    @Test
-    public void isDebugEnabled() throws Exception {
+      // When
+      cliHelper.parseArguments(args);
 
-    }
+      // Then
+      verify(cliHelper, times(1)).showHelp();
+   }
+
+   @Test
+   public void showHelp_shouldBeCalled_whenInvalidArgumentsIsGiven() {
+
+      // Given
+      String[] args = new String[] { "-unknownArg" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      verify(cliHelper, times(1)).showHelp();
+
+   }
+
+   @Test
+   public void showVersion_shouldBeCalled_whenRequestedWithVersionFlag() throws Exception {
+
+      // Given
+      String[] args = new String[] { "-v" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      verify(cliHelper, times(1)).showVersion();
+   }
+
+   @Test
+   public void showVersion_shouldBeCalled_whenRequestedWithVersionAlternativeFlag() throws Exception {
+
+      // Given
+      String[] args = new String[] { "--version" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      verify(cliHelper, times(1)).showVersion();
+   }
+
+   @Test
+   public void isDebugEnabled_shouldEnableDebug_whenRequestedWithDebugFlag() throws Exception {
+
+      // Given
+      String[] args = new String[] { "-d" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(true, cliHelper.isDebugEnabled());
+   }
+
+   @Test
+   public void isDebugEnabled_shouldBeTrue_whenRequestedWithDebugAlternativeFlag() throws Exception {
+
+      // Given
+      String[] args = new String[] { "--debug" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(true, cliHelper.isDebugEnabled());
+   }
+
+   @Test
+   public void isDebugEnabled_shouldBeFalse_whenRequestedWithoutDebugFlag() throws Exception {
+
+      // Given
+      String[] args = new String[] { "--something" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(false, cliHelper.isDebugEnabled());
+   }
 
 }

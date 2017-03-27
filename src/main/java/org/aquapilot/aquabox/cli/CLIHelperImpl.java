@@ -11,7 +11,6 @@ package org.aquapilot.aquabox.cli;
 
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * This class manage CLI parameters
@@ -27,35 +26,36 @@ public class CLIHelperImpl implements CLIHelper {
 
     private boolean debugEnabled;
 
-    public CLIHelperImpl(String[] args) {
+   @Override
+   public void parseArguments(String[] args) {
 
-        if (args == null || args.length == 0) {
-            return;
-        }
+      if (args == null || args.length == 0) {
+         return;
+      }
 
-        CLIOptions options = new CLIOptions();
-        this.parser = new CmdLineParser(options);
+      CLIOptions options = new CLIOptions();
+      this.parser = new CmdLineParser(options);
 
-        try {
-            parser.parseArgument(args);
+      try {
+         parser.parseArgument(args);
 
-            if (options.isHelp()) {
-                showHelp();
-            }
-            if (options.isVersion()) {
-                showVersion();
-            }
-            if (options.isDebug()) {
-                debugEnabled = true;
-            } else {
-                debugEnabled = false;
-            }
+         if (options.isHelp()) {
+            showHelp();
+         }
+         if (options.isVersion()) {
+            showVersion();
+         }
+         if (options.isDebug()) {
+            debugEnabled = true;
+         } else {
+            debugEnabled = false;
+         }
+      } catch (CmdLineException e) {
+         // display help
+         showHelp();
+      }
 
-        } catch (CmdLineException e) {
-            // display help
-            parser.printUsage(System.out);
-        }
-    }
+   }
 
     @Override
     public void showHelp() {
@@ -66,7 +66,7 @@ public class CLIHelperImpl implements CLIHelper {
     @Override
     public void showVersion() {
 
-        throw new NotImplementedException();
+       //  throw new NotImplementedException();
     }
 
     @Override

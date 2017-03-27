@@ -9,10 +9,7 @@
 
 package org.aquapilot.aquabox.cli;
 
-import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.Option;
-
-import java.util.List;
 
 /**
  * This class describe allowed options in CLI.
@@ -33,10 +30,7 @@ public class CLIOptions {
     @Option(name = "-d", aliases = {"--debug"}, usage = "Enable debug mode")
     private boolean debug;
 
-    @Argument
-    private List<String> arguments; // Store everything passed in cli args that is not an option
-
-    public boolean isHelp() {
+   public boolean isHelp() {
 
         return help;
     }
@@ -49,10 +43,5 @@ public class CLIOptions {
     public boolean isDebug() {
 
         return debug;
-    }
-
-    public List<String> getArguments() {
-
-        return arguments;
     }
 }
