@@ -48,6 +48,7 @@ public class CreditsUtil {
 
          creditsString.append("================================================================\n");
          LOGGER.info(creditsString.toString());
+         System.out.println(creditsString.toString());
       }
    }
 }

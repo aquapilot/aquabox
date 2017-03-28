@@ -21,6 +21,8 @@
         <ini4j.version>0.5.4</ini4j.version>
         <args4j.version>2.33</args4j.version>
         <firebase.version>4.1.3</firebase.version>
+
+        <cucumber.options>--plugin pretty --tags @wip</cucumber.options>
     </properties>
     <dependencies>
         <dependency>
@@ -91,7 +93,124 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
         </dependency>
+        <!-- For integration testing -->
+
     </dependencies>
+    <profiles>
+        <profile>
+            <id>integration-tests</id>
+            <properties>
+                <cucumber.options>--plugin html:target/cucumber --tags @wip,@foo</cucumber.options>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>versions-maven-plugin</artifactId>
+                        <version>2.2</version>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.10</version>
+                        <executions>
+                            <execution>
+                                <id>add-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/it/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>add-resource</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-test-resource</goal>
+                                </goals>
+                                <configuration>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/it/resources</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <!-- block unit tests execution -->
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.19.1</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <cucumber.options>${cucumber.options}</cucumber.options>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>info.cukes</groupId>
+                    <artifactId>cucumber-picocontainer</artifactId>
+                    <version>1.2.4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>info.cukes</groupId>
+                    <artifactId>cucumber-junit</artifactId>
+                    <version>1.2.4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>selenium-java</artifactId>
+                    <version>2.53.1</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.seleniumhq.selenium</groupId>
+                    <artifactId>htmlunit-driver</artifactId>
+                    <version>2.23.2</version>
+                </dependency>
+                <!-- Deps to fix https://github.com/SeleniumHQ/htmlunit-driver/issues/22 -->
+                <dependency>
+                    <groupId>org.eclipse.jetty.websocket</groupId>
+                    <artifactId>websocket-client</artifactId>
+                    <version>9.4.0.M1</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.picocontainer</groupId>
+                    <artifactId>picocontainer</artifactId>
+                    <version>2.15</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     <build>
         <finalName>aquabox</finalName>
         <plugins>
