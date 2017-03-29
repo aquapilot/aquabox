@@ -19,16 +19,16 @@ import org.aquapilot.aquabox.modules.settings.model.Settings;
  */
 public class SettingsModule extends AbstractModule {
 
-   private Settings settings;
+    private Settings settings;
 
-   public SettingsModule(final Settings settings) {
+    public SettingsModule(final Settings settings) {
 
-      this.settings = settings;
-   }
+        this.settings = settings;
+    }
 
-   @Override
-   protected void configure() {
+    @Override
+    protected void configure() {
 
-      bind(Settings.class).annotatedWith(InjectSettings.class).toInstance(settings);
-   }
+        bind(Settings.class).toInstance(settings);
+    }
 }

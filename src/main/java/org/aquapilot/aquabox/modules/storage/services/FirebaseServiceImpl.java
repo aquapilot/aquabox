@@ -15,7 +15,6 @@ import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.aquapilot.aquabox.modules.logger.Log;
-import org.aquapilot.aquabox.modules.settings.InjectSettings;
 import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.aquapilot.aquabox.modules.storage.model.AquapilotIcon;
 import org.aquapilot.aquabox.modules.storage.model.AquaticSystemType;
@@ -36,75 +35,75 @@ import java.util.Collection;
 @Singleton
 public class FirebaseServiceImpl implements StorageService {
 
-   @Log
-   Logger log;
+    @Log
+    Logger log;
 
-   private Settings settings;
+    private Settings settings;
 
-   @Inject
-   public void setServices(@InjectSettings Settings settings) {
+    @Inject
+    public void setServices(Settings settings) {
 
-      this.settings = settings;
-   }
+        this.settings = settings;
+    }
 
-   public FirebaseServiceImpl() {
+    public FirebaseServiceImpl() {
 
-   }
+    }
 
-   @Override
-   public void saveAquaticSystem(String name, AquaticSystemType type) {
+    @Override
+    public void saveAquaticSystem(String name, AquaticSystemType type) {
 
-   }
+    }
 
-   @Override
-   public void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon) {
+    @Override
+    public void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon) {
 
-   }
+    }
 
-   @Override
-   public void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon) {
+    @Override
+    public void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon) {
 
-   }
+    }
 
-   @Override
-   public void saveMeasure(String uuid, String newValue) {
+    @Override
+    public void saveMeasure(String uuid, String newValue) {
 
-      System.out.println("Save new measure");
-      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
+        System.out.println("Save new measure");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
 
-      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
-         if (databaseError != null) {
-            System.out.println("Data could not be saved " + databaseError.getMessage());
-         } else {
-            System.out.println("Data saved successfully.");
-         }
-      });
-   }
+        ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+            } else {
+                System.out.println("Data saved successfully.");
+            }
+        });
+    }
 
-   @Override
-   public void start() throws Exception {
+    @Override
+    public void start() throws Exception {
 
-      log.debug(">>> Start Firebase service storage");
+        log.debug(">>> Start Firebase service storage");
 
-      // TODO: should read settings
-      String dbName = settings.getDatabaseName();
-      String databaseUrl = "https://" + dbName + ".firebaseio.com";
+        // TODO: should read settings
+        String dbName = settings.getDatabaseName();
+        String databaseUrl = "https://" + dbName + ".firebaseio.com";
 
-      FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+        FileInputStream serviceAccount = new FileInputStream("./toremove.json");
 
-      if (FirebaseApp.getApps().isEmpty()) {
-         FirebaseOptions options = new FirebaseOptions.Builder()
-               .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-               .setDatabaseUrl(databaseUrl)
-               .build();
-         FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
-      }
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+                    .setDatabaseUrl(databaseUrl)
+                    .build();
+            FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+        }
 
-   }
+    }
 
-   @Override
-   public void stop() {
+    @Override
+    public void stop() {
 
-      log.debug(">>> Firebase service storage stopped");
-   }
+        log.debug(">>> Firebase service storage stopped");
+    }
 }

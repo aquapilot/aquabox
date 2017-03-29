@@ -16,7 +16,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.aquapilot.aquabox.modules.logger.Log;
 import org.aquapilot.aquabox.modules.notifier.model.NewSensorDetectedNotification;
-import org.aquapilot.aquabox.modules.settings.InjectSettings;
 import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.slf4j.Logger;
 
@@ -32,63 +31,62 @@ import java.io.FileInputStream;
 @Singleton
 public class NotifierFirebaseServiceImpl implements NotifierService {
 
-   @Log
-   Logger log;
+    @Log
+    Logger log;
 
-   private Settings settings;
+    private Settings settings;
 
-   public NotifierFirebaseServiceImpl() {
+    public NotifierFirebaseServiceImpl() {
 
-   }
+    }
 
-   @Inject
-   public void setServices(@InjectSettings Settings settings) {
+    @Inject
+    public void setServices(Settings settings) {
 
-      this.settings = settings;
-   }
+        this.settings = settings;
+    }
 
-   @Override
-   public void start() throws Exception {
+    @Override
+    public void start() throws Exception {
 
-      if (FirebaseApp.getApps().isEmpty()) {
-         // TODO: should read settings
-         String dbName = settings.getDatabaseName();
-         String databaseUrl = "https://" + dbName + ".firebaseio.com";
+        if (FirebaseApp.getApps().isEmpty()) {
+            // TODO: should read settings
+            String dbName = settings.getDatabaseName();
+            String databaseUrl = "https://" + dbName + ".firebaseio.com";
 
-         FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+            FileInputStream serviceAccount = new FileInputStream("./toremove.json");
 
-         FirebaseOptions options = new FirebaseOptions.Builder()
-               .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-               .setDatabaseUrl(databaseUrl)
-               .build();
-         FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
-      }
-      log.debug(">>> FirebaseNotifier service started");
-   }
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+                    .setDatabaseUrl(databaseUrl)
+                    .build();
+            FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+        }
+        log.debug(">>> FirebaseNotifier service started");
+    }
 
-   @Override
-   public void stop() {
+    @Override
+    public void stop() {
+        log.debug(">>> Firebase service notifier stopped");
+    }
 
-      log.debug(">>> Firebase service notifier stopped");
-   }
+    @Override
+    public void notify(NewSensorDetectedNotification notification) {
 
-   @Override
-   public void notify(NewSensorDetectedNotification notification) {
+        System.out.println("Send notification in firebase queue");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
 
-      System.out.println("Send notification in firebase queue");
-      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
+        ref.push().setValue(notification, (databaseError, databaseReference) -> {
+            if (databaseError != null) {
+                System.out.println("Data could not be saved " + databaseError.getMessage());
+            } else {
+                System.out.println("Data saved successfully.");
+            }
+        });
+    }
 
-      ref.push().setValue(notification, (databaseError, databaseReference) -> {
-         if (databaseError != null) {
-            System.out.println("Data could not be saved " + databaseError.getMessage());
-         } else {
-            System.out.println("Data saved successfully.");
-         }
-      });
-   }
+    @Override
+    public void notifyNative() {
 
-   @Override
-   public void notifyNative() {
-
-   }
+    }
 }
