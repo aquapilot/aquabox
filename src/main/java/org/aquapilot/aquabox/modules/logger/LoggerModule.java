@@ -24,9 +24,6 @@ public class LoggerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-
-        //   Module module = loginject(Logger.class, LogManager::getLogger, currentClass()).as(Module.class);
-        //   install(module);
         bindListener(Matchers.any(), new SLF4JTypeListener());
     }
 }

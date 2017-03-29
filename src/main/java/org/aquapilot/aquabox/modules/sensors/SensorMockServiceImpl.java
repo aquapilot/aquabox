@@ -11,11 +11,13 @@ package org.aquapilot.aquabox.modules.sensors;
 
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.modules.gpio.services.GPIOService;
+import org.aquapilot.aquabox.modules.logger.Log;
 import org.aquapilot.aquabox.modules.sensors.event.SensorBatteryStatusEvent;
 import org.aquapilot.aquabox.modules.sensors.event.SensorDetectedEvent;
 import org.aquapilot.aquabox.modules.sensors.event.SensorUnreachableEvent;
 import org.aquapilot.aquabox.modules.sensors.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.modules.sensors.listener.SensorListener;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -42,6 +44,9 @@ public class SensorMockServiceImpl implements SensorService {
 
     private ExecutorService executor;
 
+    @Log
+    Logger log;
+
     //setter method injector
     @Inject
     public void setServices(GPIOService gpioService) {
@@ -56,7 +61,7 @@ public class SensorMockServiceImpl implements SensorService {
 
     @Override
     public void start() throws Exception {
-
+        log.info("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
         SpiDevice spi = gpioService.getSPI();
         System.out.println(">> Sensor Service started");
         executor = Executors.newSingleThreadExecutor();
