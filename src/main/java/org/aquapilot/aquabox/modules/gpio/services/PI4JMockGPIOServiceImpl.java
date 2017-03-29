@@ -19,6 +19,8 @@ import com.pi4j.io.spi.impl.SpiDeviceImpl;
 import org.aquapilot.aquabox.modules.gpio.event.PinState;
 import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
 import org.aquapilot.aquabox.modules.gpio.listener.GPIOPinStateListener;
+import org.aquapilot.aquabox.modules.logger.Log;
+import org.slf4j.Logger;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ import static org.mockito.Mockito.mock;
  */
 @Singleton
 public class PI4JMockGPIOServiceImpl implements GPIOService {
+
+   @Log
+   Logger log;
 
     private ExecutorService executor;
 
@@ -97,7 +102,7 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
 
     @Override
     public void start() throws Exception {
-        System.out.println(">> GPIO Mock Service started");
+
         // Start a fake gpio simulator
         executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
@@ -115,6 +120,8 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
 
             }
         });
+
+       log.debug(">> GPIO Mock Service started");
     }
 
     @Override
@@ -124,6 +131,6 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
         }
 
         executor.shutdownNow();
-        System.out.println(">> GPIO Mock Service stopped");
+       log.debug(">> GPIO Mock Service stopped");
     }
 }

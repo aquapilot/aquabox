@@ -68,6 +68,46 @@ public class AquaboxStepDef {
       }
    }
 
+   @When("^I run the aquabox jar with --debug flag$")
+   public void iRunTheAquaboxJarWithDebugFlag() throws Throwable {
+      // Start the app in a thread so it doesnt block the testing process
+      executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         try {
+            System.setOut(new PrintStream(output, true, "UTF-8"));
+         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+         }
+         Launcher.main(new String[] { "--debug" });
+      });
+
+      try {
+         TimeUnit.SECONDS.sleep(5);
+      } catch (InterruptedException e) {
+         // It is an expected behavior
+      }
+   }
+
+   @When("^I run the aquabox jar with --version flag$")
+   public void iRunTheAquaboxJarWithVersionFlag() throws Throwable {
+      // Start the app in a thread so it doesnt block the testing process
+      executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         try {
+            System.setOut(new PrintStream(output, true, "UTF-8"));
+         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+         }
+         Launcher.main(new String[] { "--version" });
+      });
+
+      try {
+         TimeUnit.SECONDS.sleep(5);
+      } catch (InterruptedException e) {
+         // It is an expected behavior
+      }
+   }
+
    @Then("^I should see credits at startup$")
    public void iShouldSeeCreditsLogAtStartup() throws Throwable {
 
@@ -78,10 +118,22 @@ public class AquaboxStepDef {
             + "  / ___ \\  | (_| | | |_| | | (_| | | |_) | | | | | | (_) | | |_ \n"
             + " /_/   \\_\\  \\__, |  \\__,_|  \\__,_| | .__/  |_| |_|  \\___/   \\__|\n"
             + "               |_|                 |_|                          \n"
-            + "(C) Sébastien Vermeille <sebastien.vermeille@gmail.com> \n" + "Distributed under MIT license \n"
+            + "(C) Sebastien Vermeille <sebastien.vermeille@gmail.com> \n" + "Distributed under MIT license \n"
             + "================================================================";
 
       assertTrue(output.toString().contains(expected));
+   }
+
+   @Then("^I should see debug messages in the console$")
+   public void iShouldSeeDebugMessagesInTheConsole() throws Throwable {
+
+      assertTrue(output.toString().contains("[DEBUG]"));
+   }
+
+   @Then("^I should see the aquabox version$")
+   public void iShouldSeeTheAquaboxVersion() throws Throwable {
+
+      assertTrue(output.toString().contains("version"));
    }
 
    @After
@@ -90,5 +142,4 @@ public class AquaboxStepDef {
       executor.shutdownNow();
       System.setOut(stdout);
    }
-
 }

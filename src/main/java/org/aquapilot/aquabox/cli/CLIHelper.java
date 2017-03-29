@@ -42,4 +42,11 @@ public interface CLIHelper {
     */
    boolean isDebugEnabled();
 
+   /**
+    * Returns true if the received CLI parameters are not blockers
+    *
+    * @return
+    */
+   boolean isAppAllowedToStart();
+
 }

@@ -18,13 +18,15 @@ import org.kohsuke.args4j.CmdLineParser;
  * It is based on Args4j
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see https://github.com/kohsuke/args4j
+ * @link https://github.com/kohsuke/args4j
  */
 public class CLIHelperImpl implements CLIHelper {
 
-    private CmdLineParser parser;
+   private CmdLineParser parser;
 
-    private boolean debugEnabled;
+   private boolean debugEnabled;
+
+   private boolean allowedToStart = true;
 
    @Override
    public void parseArguments(String[] args) {
@@ -35,15 +37,17 @@ public class CLIHelperImpl implements CLIHelper {
 
       CLIOptions options = new CLIOptions();
       this.parser = new CmdLineParser(options);
-
+      allowedToStart = true;
       try {
          parser.parseArgument(args);
 
          if (options.isHelp()) {
             showHelp();
+            allowedToStart = false;
          }
          if (options.isVersion()) {
             showVersion();
+            allowedToStart = false;
          }
          if (options.isDebug()) {
             debugEnabled = true;
@@ -53,26 +57,34 @@ public class CLIHelperImpl implements CLIHelper {
       } catch (CmdLineException e) {
          // display help
          showHelp();
+         allowedToStart = false;
       }
 
    }
 
-    @Override
-    public void showHelp() {
+   @Override
+   public void showHelp() {
 
-        parser.printUsage(System.err);
-    }
+      parser.printUsage(System.err);
+   }
 
-    @Override
-    public void showVersion() {
+   @Override
+   public void showVersion() {
 
-       //  throw new NotImplementedException();
-    }
+      //  throw new NotImplementedException();
+      System.out.println("TODO");
+   }
 
-    @Override
-    public boolean isDebugEnabled() {
+   @Override
+   public boolean isDebugEnabled() {
 
-        return debugEnabled;
-    }
+      return debugEnabled;
+   }
+
+   @Override
+   public boolean isAppAllowedToStart() {
+
+      return allowedToStart;
+   }
 
 }

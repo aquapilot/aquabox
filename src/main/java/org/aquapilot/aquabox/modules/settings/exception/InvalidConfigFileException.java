@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.settings.exception;
+package org.aquapilot.aquabox.modules.settings.exception;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

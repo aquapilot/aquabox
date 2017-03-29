@@ -81,6 +81,16 @@
             <artifactId>firebase-admin</artifactId>
             <version>${firebase.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>1.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-artifact</artifactId>
+            <version>3.0.3</version>
+        </dependency>
         <!-- For testing purpose only -->
         <dependency>
             <groupId>junit</groupId>

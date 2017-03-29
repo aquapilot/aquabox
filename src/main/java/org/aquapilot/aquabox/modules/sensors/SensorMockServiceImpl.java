@@ -38,84 +38,101 @@ import java.util.concurrent.TimeUnit;
  */
 public class SensorMockServiceImpl implements SensorService {
 
-    private GPIOService gpioService;
+   private GPIOService gpioService;
 
-    List<SensorListener> listeners = new ArrayList<>();
+   List<SensorListener> listeners = new ArrayList<>();
 
-    private ExecutorService executor;
+   private ExecutorService executor;
 
-    @Log
-    Logger log;
+   @Log
+   Logger log;
 
-    //setter method injector
-    @Inject
-    public void setServices(GPIOService gpioService) {
-        this.gpioService = gpioService;
-    }
+   //setter method injector
+   @Inject
+   public void setServices(GPIOService gpioService) {
 
-    private int randomBetween(int min, int max) {
-        Random r = new Random();
-        int result = r.nextInt(max - min) + min;
-        return result;
-    }
+      this.gpioService = gpioService;
+   }
 
-    @Override
-    public void start() throws Exception {
-        log.info("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT");
-        SpiDevice spi = gpioService.getSPI();
-        System.out.println(">> Sensor Service started");
-        executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
+   private int randomBetween(int min, int max) {
 
-            List<String> registredUUIDs = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                registredUUIDs.add(UUID.randomUUID().toString());
+      Random r = new Random();
+      int result = r.nextInt(max - min) + min;
+      return result;
+   }
+
+   @Override
+   public void start() throws Exception {
+
+      SpiDevice spi = gpioService.getSPI();
+      executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+
+         List<String> registredUUIDs = new ArrayList<>();
+         for (int i = 0; i < 3; i++) {
+            registredUUIDs.add(UUID.randomUUID().toString());
+         }
+         while (true) {
+
+            TimeUnit.SECONDS.sleep(8);
+
+            // generate random receptions
+            for (SensorListener listener : this.listeners) {
+
+               switch (randomBetween(0, 10)) {
+                  case 0:
+                     SensorDetectedEvent event = SensorDetectedEvent
+                           .newInstance()
+                           .UUID(UUID.randomUUID().toString())
+                           .build();
+                     listener.onNewSensorDetected(event);
+                     break;
+                  case 1:
+                     SensorBatteryStatusEvent sensorBatteryStatusEvent = SensorBatteryStatusEvent
+                           .newInstance()
+                           .UUID(registredUUIDs.get(randomBetween(0, 2)))
+                           .build();
+                     listener.onSensorSendBatteryStatus(sensorBatteryStatusEvent);
+                     break;
+                  case 2:
+                     SensorUnreachableEvent sensorUnreachableEvent = SensorUnreachableEvent
+                           .newInstance()
+                           .UUID(registredUUIDs.get(randomBetween(0, 2)))
+                           .build();
+                     listener.onSensorUnreachable(sensorUnreachableEvent);
+                     break;
+                  default:
+                     SensorValueChangeEvent sensorValueChangeEvent = SensorValueChangeEvent
+                           .newInstance()
+                           .UUID(registredUUIDs.get(randomBetween(0, 2)))
+                           .oldValue("15.0")
+                           .newValue("22.4")
+                           .build();
+                     listener.onSensorValueChange(sensorValueChangeEvent);
+                     break;
+               }
+
             }
-            while (true) {
 
-                TimeUnit.SECONDS.sleep(8);
+         }
+      });
+      log.debug(">> Sensor Service started");
+   }
 
-                // generate random receptions
-                for (SensorListener listener : this.listeners) {
+   @Override
+   public void stop() {
 
-                    switch (randomBetween(0, 10)) {
-                        case 0:
-                            SensorDetectedEvent event = SensorDetectedEvent.newInstance().UUID(UUID.randomUUID().toString()).build();
-                            listener.onNewSensorDetected(event);
-                            break;
-                        case 1:
-                            SensorBatteryStatusEvent sensorBatteryStatusEvent = SensorBatteryStatusEvent.newInstance().UUID(registredUUIDs.get(randomBetween(0, 2))).build();
-                            listener.onSensorSendBatteryStatus(sensorBatteryStatusEvent);
-                            break;
-                        case 2:
-                            SensorUnreachableEvent sensorUnreachableEvent = SensorUnreachableEvent.newInstance().UUID(registredUUIDs.get(randomBetween(0, 2))).build();
-                            listener.onSensorUnreachable(sensorUnreachableEvent);
-                            break;
-                        default:
-                            SensorValueChangeEvent sensorValueChangeEvent = SensorValueChangeEvent.newInstance().UUID(registredUUIDs.get(randomBetween(0, 2))).oldValue("15.0").newValue("22.4").build();
-                            listener.onSensorValueChange(sensorValueChangeEvent);
-                            break;
-                    }
+      if (executor.isShutdown()) {
+         return;
+      }
 
-                }
+      executor.shutdownNow();
+      log.debug(">> Sensor Service stopped");
+   }
 
-            }
-        });
+   @Override
+   public void registerListener(SensorListener listener) {
 
-    }
-
-    @Override
-    public void stop() {
-        if (executor.isShutdown()) {
-            return;
-        }
-
-        executor.shutdownNow();
-        System.out.println(">> Sensor service stopped");
-    }
-
-    @Override
-    public void registerListener(SensorListener listener) {
-        listeners.add(listener);
-    }
+      listeners.add(listener);
+   }
 }

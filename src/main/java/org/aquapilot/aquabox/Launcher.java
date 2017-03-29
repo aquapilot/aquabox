@@ -17,10 +17,11 @@ import org.aquapilot.aquabox.modules.gpio.GPIOModule;
 import org.aquapilot.aquabox.modules.logger.LoggerModule;
 import org.aquapilot.aquabox.modules.notifier.NotifierModule;
 import org.aquapilot.aquabox.modules.sensors.SensorModule;
+import org.aquapilot.aquabox.modules.settings.SettingsModule;
+import org.aquapilot.aquabox.modules.settings.helper.SettingsHelper;
+import org.aquapilot.aquabox.modules.settings.helper.SettingsHelperImpl;
+import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.aquapilot.aquabox.modules.storage.StorageModule;
-import org.aquapilot.aquabox.settings.SettingsHelper;
-import org.aquapilot.aquabox.settings.SettingsHelperImpl;
-import org.aquapilot.aquabox.settings.model.Settings;
 
 /**
  * This class is the main class of Aquabox.
@@ -43,7 +44,9 @@ public class Launcher {
         SettingsHelper settingsHelper = new SettingsHelperImpl();
         Settings settings = settingsHelper.loadSettings();
 
-        Injector injector = Guice.createInjector(new LoggerModule(), new StorageModule(settings), new GPIOModule(), new SensorModule(), new NotifierModule());
+       Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
+                                                new StorageModule(settings), new GPIOModule(), new SensorModule(),
+                                                new NotifierModule());
 
         Aquabox aquabox = injector.getInstance(Aquabox.class);
         aquabox.start();

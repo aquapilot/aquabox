@@ -9,9 +9,15 @@
 
 package org.aquapilot.aquabox.modules.gpio.services;
 
-import com.pi4j.io.gpio.*;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
+import com.pi4j.io.gpio.GpioPinDigitalInput;
+import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.modules.gpio.listener.GPIOPinStateListener;
+import org.aquapilot.aquabox.modules.logger.Log;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 
@@ -21,6 +27,9 @@ import java.util.Collection;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public class PI4JGPIOServiceImpl implements GPIOService {
+
+   @Log
+   Logger log;
 
     private final static GpioController gpio = GpioFactory.getInstance();
 
@@ -62,10 +71,12 @@ public class PI4JGPIOServiceImpl implements GPIOService {
     @Override
     public void start() throws Exception {
 
+       log.debug(">> GPIO Service started");
     }
 
     @Override
     public void stop() {
         gpio.shutdown();    // stop all GPIO activity/threads by shutting down the GPIO controller
+       log.debug(">> GPIO Service stopped");
     }
 }

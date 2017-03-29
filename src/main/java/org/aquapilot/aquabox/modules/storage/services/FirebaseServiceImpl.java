@@ -14,11 +14,16 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import org.aquapilot.aquabox.modules.logger.Log;
+import org.aquapilot.aquabox.modules.settings.InjectSettings;
+import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.aquapilot.aquabox.modules.storage.model.AquapilotIcon;
 import org.aquapilot.aquabox.modules.storage.model.AquaticSystemType;
 import org.aquapilot.aquabox.modules.storage.model.Measure;
 import org.aquapilot.aquabox.modules.storage.model.SensorType;
+import org.slf4j.Logger;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.FileInputStream;
 import java.util.Collection;
@@ -31,63 +36,75 @@ import java.util.Collection;
 @Singleton
 public class FirebaseServiceImpl implements StorageService {
 
-    public FirebaseServiceImpl() {
+   @Log
+   Logger log;
 
-    }
+   private Settings settings;
 
-    @Override
-    public void saveAquaticSystem(String name, AquaticSystemType type) {
+   @Inject
+   public void setServices(@InjectSettings Settings settings) {
 
-    }
+      this.settings = settings;
+   }
 
-    @Override
-    public void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon) {
+   public FirebaseServiceImpl() {
 
-    }
+   }
 
-    @Override
-    public void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon) {
+   @Override
+   public void saveAquaticSystem(String name, AquaticSystemType type) {
 
-    }
+   }
 
-    @Override
-    public void saveMeasure(String uuid, String newValue) {
-        System.out.println("Save new measure");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
+   @Override
+   public void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon) {
 
-        ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
-            if (databaseError != null) {
-                System.out.println("Data could not be saved " + databaseError.getMessage());
-            } else {
-                System.out.println("Data saved successfully.");
-            }
-        });
-    }
+   }
 
-    @Override
-    public void start() throws Exception {
+   @Override
+   public void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon) {
 
-        System.out.println(">>> Start Firebase service storage");
-        // TODO: should read settings
-        String dbName = "aquamonitor-a3db9";
+   }
 
-        String databaseUrl = "https://" + dbName + ".firebaseio.com";
+   @Override
+   public void saveMeasure(String uuid, String newValue) {
 
-        FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+      System.out.println("Save new measure");
+      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
 
-        if (FirebaseApp.getApps().size() == 0) {
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-                    .setDatabaseUrl(databaseUrl)
-                    .build();
-            FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
-        }
+      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
+         if (databaseError != null) {
+            System.out.println("Data could not be saved " + databaseError.getMessage());
+         } else {
+            System.out.println("Data saved successfully.");
+         }
+      });
+   }
 
-        FirebaseDatabase.getInstance().goOffline();
-    }
+   @Override
+   public void start() throws Exception {
 
-    @Override
-    public void stop() {
-        // nothing to do
-    }
+      log.debug(">>> Start Firebase service storage");
+
+      // TODO: should read settings
+      String dbName = settings.getDatabaseName();
+      String databaseUrl = "https://" + dbName + ".firebaseio.com";
+
+      FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+
+      if (FirebaseApp.getApps().isEmpty()) {
+         FirebaseOptions options = new FirebaseOptions.Builder()
+               .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+               .setDatabaseUrl(databaseUrl)
+               .build();
+         FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+      }
+
+   }
+
+   @Override
+   public void stop() {
+
+      log.debug(">>> Firebase service storage stopped");
+   }
 }

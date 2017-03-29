@@ -78,7 +78,8 @@ public class Aquabox {
      * Stop the aquabox
      */
     public void stop() {
-        gpioService.stop();
+
+       gpioService.stop();
     }
 
     public void init() {

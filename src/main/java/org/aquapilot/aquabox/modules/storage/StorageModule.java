@@ -10,8 +10,8 @@
 package org.aquapilot.aquabox.modules.storage;
 
 import com.google.inject.AbstractModule;
+import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.aquapilot.aquabox.modules.storage.services.StorageService;
-import org.aquapilot.aquabox.settings.model.Settings;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

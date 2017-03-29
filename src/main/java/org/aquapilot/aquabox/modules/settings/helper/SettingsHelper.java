@@ -7,9 +7,9 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.settings;
+package org.aquapilot.aquabox.modules.settings.helper;
 
-import org.aquapilot.aquabox.settings.model.Settings;
+import org.aquapilot.aquabox.modules.settings.model.Settings;
 
 /**
  * This class define the settings module
@@ -18,6 +18,6 @@ import org.aquapilot.aquabox.settings.model.Settings;
  */
 public interface SettingsHelper {
 
-    Settings loadSettings();
+   Settings loadSettings();
 
 }

@@ -22,6 +22,7 @@ public class NotifierModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(NotifierService.class).to(NotifierFirebaseServiceImpl.class).asEagerSingleton();
+
+       bind(NotifierService.class).to(NotifierFirebaseServiceImpl.class).asEagerSingleton();
     }
 }
