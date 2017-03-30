@@ -18,8 +18,9 @@ import com.google.inject.AbstractModule;
  */
 public class SensorModule extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        bind(SensorService.class).to(SensorMockServiceImpl.class).asEagerSingleton();
-    }
+   @Override
+   protected void configure() {
+
+      bind(SensorService.class).to(SensorMockServiceImpl.class).asEagerSingleton();
+   }
 }

@@ -38,14 +38,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class SensorMockServiceImpl implements SensorService {
 
-   private GPIOService gpioService;
-
    List<SensorListener> listeners = new ArrayList<>();
-
-   private ExecutorService executor;
-
    @Log
    Logger log;
+   private GPIOService gpioService;
+   private ExecutorService executor;
 
    //setter method injector
    @Inject
@@ -64,9 +61,9 @@ public class SensorMockServiceImpl implements SensorService {
    @Override
    public void start() throws Exception {
 
-      SpiDevice spi = gpioService.getSPI();
-      executor = Executors.newSingleThreadExecutor();
-      executor.submit(() -> {
+      SpiDevice spi = this.gpioService.getSPI();
+      this.executor = Executors.newSingleThreadExecutor();
+      this.executor.submit(() -> {
 
          List<String> registredUUIDs = new ArrayList<>();
          for (int i = 0; i < 3; i++) {
@@ -116,23 +113,23 @@ public class SensorMockServiceImpl implements SensorService {
 
          }
       });
-      log.debug(">> Sensor Service started");
+      this.log.debug(">> Sensor Service started");
    }
 
    @Override
    public void stop() {
 
-      if (executor.isShutdown()) {
+      if (this.executor.isShutdown()) {
          return;
       }
 
-      executor.shutdownNow();
-      log.debug(">> Sensor Service stopped");
+      this.executor.shutdownNow();
+      this.log.debug(">> Sensor Service stopped");
    }
 
    @Override
    public void registerListener(SensorListener listener) {
 
-      listeners.add(listener);
+      this.listeners.add(listener);
    }
 }

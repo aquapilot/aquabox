@@ -9,6 +9,7 @@
 
 package org.aquapilot.aquabox.modules.sensors;
 
+import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.modules.sensors.listener.SensorListener;
@@ -40,6 +41,8 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public void start() throws Exception {
+
+       gpioService.registerInputDigitalPin(RaspiPin.GPIO_00); // RF Sensor data
 
         SpiDevice spi = gpioService.getSPI();
         System.out.println(">> Sensor Service started");

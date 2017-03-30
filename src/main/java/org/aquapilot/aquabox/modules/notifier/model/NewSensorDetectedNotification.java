@@ -16,12 +16,13 @@ package org.aquapilot.aquabox.modules.notifier.model;
  */
 public class NewSensorDetectedNotification implements Notification {
 
-    public String sensorUUID;
-    public NotificationType type;
+   public String sensorUUID;
+   public NotificationType type;
 
-    public NewSensorDetectedNotification(String sensorUUID) {
-        this.sensorUUID = sensorUUID;
-        this.type = NotificationType.NEW_SENSOR_DETECTED;
-    }
+   public NewSensorDetectedNotification(String sensorUUID) {
+
+      this.sensorUUID = sensorUUID;
+      this.type = NotificationType.NEW_SENSOR_DETECTED;
+   }
 
 }

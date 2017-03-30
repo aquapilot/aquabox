@@ -15,7 +15,5 @@ package org.aquapilot.aquabox.modules.storage.model;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum SensorType {
-    TEMPERATURE,
-    BRIGHTNESS,
-    MOISTURE,
+   TEMPERATURE, BRIGHTNESS, MOISTURE,
 }

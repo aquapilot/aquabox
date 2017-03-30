@@ -25,35 +25,35 @@ import java.util.Collection;
  */
 public interface GPIOService extends Service {
 
-    /**
-     * Define a pin as input
-     *
-     * @param pin
-     */
-    GpioPinDigitalInput registerInputDigitalPin(Pin pin);
+   /**
+    * Define a pin as input
+    *
+    * @param pin
+    */
+   GpioPinDigitalInput registerInputDigitalPin(Pin pin);
 
-    /**
-     * Define a pin as output
-     *
-     * @param pin
-     */
-    GpioPinDigitalOutput registerOutputDigitalPin(Pin pin);
+   /**
+    * Define a pin as output
+    *
+    * @param pin
+    */
+   GpioPinDigitalOutput registerOutputDigitalPin(Pin pin);
 
-    /**
-     * Return a collection of registred input pins
-     *
-     * @return
-     */
-    Collection<Pin> getRegistredInputPins();
+   /**
+    * Return a collection of registred input pins
+    *
+    * @return
+    */
+   Collection<Pin> getRegistredInputPins();
 
-    /**
-     * Return a collection of registred output pins
-     *
-     * @return
-     */
-    Collection<Pin> getRegistredOutputPins();
+   /**
+    * Return a collection of registred output pins
+    *
+    * @return
+    */
+   Collection<Pin> getRegistredOutputPins();
 
-    void registerChangeListener(Pin pin, GPIOPinStateListener listener);
+   void registerChangeListener(Pin pin, GPIOPinStateListener listener);
 
-    SpiDevice getSPI();
+   SpiDevice getSPI();
 }

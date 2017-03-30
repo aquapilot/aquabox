@@ -180,3 +180,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Reject generated files
+logs/
+*.log

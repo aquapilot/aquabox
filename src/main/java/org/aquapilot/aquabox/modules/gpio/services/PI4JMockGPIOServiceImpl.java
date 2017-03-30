@@ -44,93 +44,99 @@ import static org.mockito.Mockito.mock;
 @Singleton
 public class PI4JMockGPIOServiceImpl implements GPIOService {
 
+   private static final GpioController gpio = null;
    @Log
    Logger log;
+   Map<Pin, List<GPIOPinStateListener>> listeners = new HashMap<>();
+   private ExecutorService executor;
+   private Set<Pin> registeredInputPins = new HashSet<>();
+   private Set<Pin> registeredOutputPins = new HashSet<>();
 
-    private ExecutorService executor;
+   public GpioController getGPIOController() {
 
-    private Set<Pin> registeredInputPins = new HashSet<>();
-    private Set<Pin> registeredOutputPins = new HashSet<>();
+      return gpio;
+   }
 
-    Map<Pin, List<GPIOPinStateListener>> listeners = new HashMap<>();
+   @Override
+   public GpioPinDigitalInput registerInputDigitalPin(Pin pin) {
 
-   private static final GpioController gpio = null;
+      this.registeredInputPins.add(pin);
+      return null;
+   }
 
-    public GpioController getGPIOController() {
-        return gpio;
-    }
+   @Override
+   public GpioPinDigitalOutput registerOutputDigitalPin(Pin pin) {
 
-    @Override
-    public GpioPinDigitalInput registerInputDigitalPin(Pin pin) {
+      this.registeredOutputPins.add(pin);
+      return null;
+   }
 
-        this.registeredInputPins.add(pin);
-        return null;
-    }
+   @Override
+   public Collection<Pin> getRegistredInputPins() {
 
-    @Override
-    public GpioPinDigitalOutput registerOutputDigitalPin(Pin pin) {
-        this.registeredOutputPins.add(pin);
-        return null;
-    }
+      return this.registeredInputPins;
+   }
 
-    @Override
-    public Collection<Pin> getRegistredInputPins() {
-        return this.registeredInputPins;
-    }
+   @Override
+   public Collection<Pin> getRegistredOutputPins() {
 
-    @Override
-    public Collection<Pin> getRegistredOutputPins() {
-        return this.registeredOutputPins;
-    }
+      return this.registeredOutputPins;
+   }
 
-    @Override
-    public void registerChangeListener(Pin pin, GPIOPinStateListener listener) {
+   @Override
+   public void registerChangeListener(Pin pin, GPIOPinStateListener listener) {
 
-        if (!listeners.containsKey(pin)) {
-            listeners.put(pin, new ArrayList<>());
-        }
+      if (!this.listeners.containsKey(pin)) {
+         this.listeners.put(pin, new ArrayList<>());
+      }
 
-        List<GPIOPinStateListener> registeredListeners = listeners.get(pin);
-        registeredListeners.add(listener);
-    }
+      List<GPIOPinStateListener> registeredListeners = this.listeners.get(pin);
+      registeredListeners.add(listener);
+   }
 
-    @Override
-    public SpiDevice getSPI() {
-        // create SPI object instance for SPI for communication
-       return mock(SpiDeviceImpl.class);
-    }
+   @Override
+   public SpiDevice getSPI() {
+      // create SPI object instance for SPI for communication
+      return mock(SpiDeviceImpl.class);
+   }
 
-    @Override
-    public void start() throws Exception {
+   @Override
+   public void start() throws Exception {
 
-        // Start a fake gpio simulator
-        executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            while (true) {
+      // Start a fake gpio simulator
+      this.executor = Executors.newSingleThreadExecutor();
+      this.executor.submit(() -> {
+         while (true) {
 
-                TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(10);
 
-                for (Collection<GPIOPinStateListener> listenersCollection : this.listeners.values()) {
-                    listenersCollection.forEach(listener -> {
+            for (Collection<GPIOPinStateListener> listenersCollection : this.listeners.values()) {
+               listenersCollection.forEach(listener -> {
 
-                        StateChangedEvent event = StateChangedEvent.newInstance().oldState(PinState.LOW).newState(PinState.HIGH).pin(RaspiPin.GPIO_01).build();
-                        listener.onPinStateChanged(event);
-                    });
-                }
-
+                  StateChangedEvent event = StateChangedEvent
+                        .newInstance()
+                        .oldState(PinState.LOW)
+                        .newState(PinState.HIGH)
+                        .pin(RaspiPin.GPIO_01)
+                        .build();
+                  listener.onPinStateChanged(event);
+               });
             }
-        });
 
-       log.debug(">> GPIO Mock Service started");
-    }
+         }
+      });
 
-    @Override
-    public void stop() {
-        if (executor.isShutdown()) {
-            return;
-        }
+      this.log.debug(">> GPIO Mock Service started");
+   }
 
-        executor.shutdownNow();
-       log.debug(">> GPIO Mock Service stopped");
-    }
+   @Override
+   public void stop() {
+
+      if (this.executor.isShutdown()) {
+         return;
+      }
+
+      this.executor.shutdownNow();
+      this.log.debug(">> GPIO Mock Service stopped");
+   }
 }

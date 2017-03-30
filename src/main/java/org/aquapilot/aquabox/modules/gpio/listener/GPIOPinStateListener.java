@@ -16,6 +16,7 @@ import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
+@FunctionalInterface
 public interface GPIOPinStateListener {
 
    /**
@@ -25,10 +26,12 @@ public interface GPIOPinStateListener {
     */
    void onPinStateChanged(StateChangedEvent event);
 
-    default void onPinStateHigh() {
-    }
+   default void onPinStateHigh() {
 
-    default void onPinStateLow() {
-    }
+   }
+
+   default void onPinStateLow() {
+
+   }
 
 }

@@ -9,11 +9,12 @@
 
 package org.aquapilot.aquabox;
 
-import com.pi4j.io.gpio.RaspiPin;
 import org.aquapilot.aquabox.common.CreditsUtil;
+import org.aquapilot.aquabox.common.Service;
 import org.aquapilot.aquabox.common.SystemUtil;
 import org.aquapilot.aquabox.common.asciiart.FigletFontAsciiArtConverter;
 import org.aquapilot.aquabox.modules.gpio.services.GPIOService;
+import org.aquapilot.aquabox.modules.logger.Log;
 import org.aquapilot.aquabox.modules.notifier.model.NewSensorDetectedNotification;
 import org.aquapilot.aquabox.modules.notifier.serices.NotifierService;
 import org.aquapilot.aquabox.modules.sensors.SensorService;
@@ -21,9 +22,12 @@ import org.aquapilot.aquabox.modules.sensors.event.SensorDetectedEvent;
 import org.aquapilot.aquabox.modules.sensors.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.modules.sensors.listener.SensorListener;
 import org.aquapilot.aquabox.modules.storage.services.StorageService;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class is the main class of Aquabox.
@@ -33,103 +37,111 @@ import javax.inject.Singleton;
 @Singleton
 public class Aquabox {
 
-    private GPIOService gpioService;
-    private StorageService storageService;
-    private SensorService sensorService;
-    private NotifierService notifierService;
+   @Log
+   private Logger log;
 
-    private static boolean started = false;
+   private boolean started = false;
+   private Set<Service> registeredServices = new HashSet<>();
 
-    //setter method injector
-    @Inject
-    public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
-                            NotifierService notifierService) {
-        this.storageService = storageService;
-        this.sensorService = sensorService;
-        this.gpioService = gpioService;
-        this.notifierService = notifierService;
-    }
+   private SensorService sensorService;
+   private StorageService storageService;
+   private NotifierService notifierService;
 
-    /**
-     * Start the aquabox
-     */
-    public void start() {
-        init();
+   @Inject
+   public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
+         NotifierService notifierService) {
 
-        started = true;
-        do {
-            System.out.println(".");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                started = false;
+      this.registerService(storageService);
+      this.registerService(sensorService);
+      this.registerService(gpioService);
+      this.registerService(notifierService);
+
+      // TODO not really beautifull code redundancy
+      this.sensorService = sensorService;
+      this.storageService = storageService;
+      this.notifierService = notifierService;
+   }
+
+   private void registerService(Service service) {
+
+      this.registeredServices.add(service);
+   }
+
+   /**
+    * Start the aquabox
+    */
+   public void start() {
+
+      if (this.started) {
+         this.log.warn("Could not start aquabox, it is already running.");
+         return;
+      }
+
+      init();
+
+      this.started = true;
+      while (this.started) {
+         try {
+            Thread.sleep(3000);
+         } catch (InterruptedException e) {
+            this.log.warn("Aquabox thread was interrupted", e);
+            Thread.currentThread().interrupt();
+            this.started = false;
+         }
+      }
+
+      stop(); // If we are here, it means the aquabox infinite loop is aborted so we stop the app
+   }
+
+   /**
+    * Stop the aquabox
+    */
+   public void stop() {
+
+      this.started = false;
+      this.log.info("Stopping services ...");
+      for (Service service : this.registeredServices) {
+         service.stop();
+      }
+   }
+
+   private void init() {
+
+      new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
+      new SystemUtil().checkSystem();
+
+      try {
+
+         this.log.info("Starting services ...");
+         for (Service service : this.registeredServices) {
+            service.start();
+         }
+
+         this.sensorService.registerListener(new SensorListener() {
+
+            @Override
+            public void onSensorValueChange(SensorValueChangeEvent event) {
+
+               Aquabox.this.log.debug(
+                     String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
+
+               Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
             }
 
-        }
-        while (started);
+            @Override
+            public void onNewSensorDetected(SensorDetectedEvent event) {
 
-        if (!started) {
-            this.stop();
-        }
-    }
+               Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
 
-    /**
-     * Stop the aquabox
-     */
-    public void stop() {
+               // Notify firebase
+               Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
+            }
+         });
 
-       gpioService.stop();
-    }
+      } catch (Exception exception) {
+         this.log.error("We applogize an unexpected error occured.", exception);
+      }
 
-    public void init() {
+   }
 
-       new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
-       new SystemUtil().checkSystem();
-
-        try {
-            storageService.start();
-            notifierService.start();
-            gpioService.start();
-            gpioService.registerInputDigitalPin(RaspiPin.GPIO_00); // RF Sensor data
-            gpioService.registerOutputDigitalPin(RaspiPin.GPIO_05); // Status rgb led
-
-            // gpioService.registerChangeListener(RaspiPin.GPIO_00, event -> System.out.println("state of this pin changed !!!"));
-
-            //   System.out.println("registred input pin amount: " + gpioService.getRegistredInputPins().size());
-            //   System.out.println("registred output pin amount: " + gpioService.getRegistredOutputPins().size());
-
-            sensorService.start();
-
-            sensorService.registerListener(new SensorListener() {
-                @Override
-                public void onSensorValueChange(SensorValueChangeEvent event) {
-
-                    System.out.println("=====================");
-                    System.out.println(event.getUUID());
-                    System.out.println(event.getOldValue());
-                    System.out.println(event.getNewValue());
-                    System.out.println("=====================");
-                    System.out.println();
-
-                    //         storageService.saveMeasure(event.getUUID(), event.getNewValue());
-                }
-
-                @Override
-                public void onNewSensorDetected(SensorDetectedEvent event) {
-                    System.out.println("===================");
-                    System.out.println("(INFO) New sensor detected");
-                    System.out.println("====================");
-                    System.out.println();
-
-                    // Notify firebase
-                    notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
 }

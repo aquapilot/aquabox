@@ -49,4 +49,9 @@ public interface CLIHelper {
     */
    boolean isAppAllowedToStart();
 
+   /**
+    * Enable verbose console output
+    * <p>It display log.debug entries</p>
+    */
+   void enableDebug();
 }

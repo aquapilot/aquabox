@@ -21,35 +21,38 @@ import org.aquapilot.aquabox.modules.sensors.event.SensorValueChangeEvent;
  */
 public interface SensorListener {
 
-    /**
-     * Called when a sensor sent its measures
-     *
-     * @param event
-     */
-    void onSensorValueChange(SensorValueChangeEvent event);
+   /**
+    * Called when a sensor sent its measures
+    *
+    * @param event
+    */
+   void onSensorValueChange(SensorValueChangeEvent event);
 
-    /**
-     * Called when a sensor sent its battery status
-     *
-     * @param event
-     */
-    default void onSensorSendBatteryStatus(SensorBatteryStatusEvent event) {
-    }
+   /**
+    * Called when a sensor sent its battery status
+    *
+    * @param event
+    */
+   default void onSensorSendBatteryStatus(SensorBatteryStatusEvent event) {
 
-    /**
-     * Called when a new sensor is connected to the aquabox network
-     *
-     * @param event
-     */
-    default void onNewSensorDetected(SensorDetectedEvent event) {
-    }
+   }
 
-    /**
-     * Called when a sensor is no more reachable
-     *
-     * @param event
-     */
-    default void onSensorUnreachable(SensorUnreachableEvent event) {
-    }
+   /**
+    * Called when a new sensor is connected to the aquabox network
+    *
+    * @param event
+    */
+   default void onNewSensorDetected(SensorDetectedEvent event) {
+
+   }
+
+   /**
+    * Called when a sensor is no more reachable
+    *
+    * @param event
+    */
+   default void onSensorUnreachable(SensorUnreachableEvent event) {
+
+   }
 
 }

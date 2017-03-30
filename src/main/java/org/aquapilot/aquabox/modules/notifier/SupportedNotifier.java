@@ -9,20 +9,27 @@
 
 package org.aquapilot.aquabox.modules.notifier;
 
-import com.google.inject.AbstractModule;
 import org.aquapilot.aquabox.modules.notifier.serices.NotifierFirebaseServiceImpl;
 import org.aquapilot.aquabox.modules.notifier.serices.NotifierService;
 
 /**
- * This Module provide ability to communicate with the raspberry pi GPIO
+ * This enum list supported notifier for aquabox notifications.
+ * A service implementation is always linked with the enum key so that guice can manage that automatically for us
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class NotifierModule extends AbstractModule {
+public enum SupportedNotifier {
+   FIREBASE(NotifierFirebaseServiceImpl.class);
 
-   @Override
-   protected void configure() {
+   private Class<? extends NotifierService> clazz;
 
-      bind(NotifierService.class).to(NotifierFirebaseServiceImpl.class).asEagerSingleton();
+   SupportedNotifier(Class<? extends NotifierService> clazz) {
+
+      this.clazz = clazz;
+   }
+
+   public Class<? extends NotifierService> getAssociatedServiceClass() {
+
+      return this.clazz;
    }
 }

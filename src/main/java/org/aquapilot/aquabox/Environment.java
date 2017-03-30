@@ -15,6 +15,5 @@ package org.aquapilot.aquabox;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum Environment {
-    PROD,
-    DEV
+   PROD, DEV
 }

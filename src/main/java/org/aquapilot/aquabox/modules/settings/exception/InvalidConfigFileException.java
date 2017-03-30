@@ -19,13 +19,13 @@ import java.io.UncheckedIOException;
  */
 public class InvalidConfigFileException extends UncheckedIOException {
 
-    public InvalidConfigFileException(String message) {
+   public InvalidConfigFileException(String message) {
 
-        super(message, null);
-    }
+      super(message, null);
+   }
 
-    public InvalidConfigFileException(String message, IOException cause) {
+   public InvalidConfigFileException(String message, IOException cause) {
 
-        super(message, cause);
-    }
+      super(message, cause);
+   }
 }

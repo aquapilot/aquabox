@@ -32,23 +32,32 @@ import org.aquapilot.aquabox.modules.storage.StorageModule;
  */
 public class Launcher {
 
-    private Launcher() {
-        // Hide the implicit public constructor
-    }
+   private Launcher() {
+      // Hide the implicit public constructor
+   }
 
-    public static final void main(String[] args) {
+   public static final void main(String[] args) {
 
-       CLIHelper cli = new CLIHelperImpl();
-       cli.parseArguments(args);
+      CLIHelper cli = new CLIHelperImpl();
+      cli.parseArguments(args);
 
-        SettingsHelper settingsHelper = new SettingsHelperImpl();
-        Settings settings = settingsHelper.loadSettings();
+      if (!cli.isAppAllowedToStart()) {
+         return;
+      }
 
-       Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
-                                                new StorageModule(settings), new GPIOModule(), new SensorModule(),
-                                                new NotifierModule());
+      SettingsHelper settingsHelper = new SettingsHelperImpl();
+      Settings settings = settingsHelper.loadSettings();
 
-        Aquabox aquabox = injector.getInstance(Aquabox.class);
-        aquabox.start();
-    }
+      Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
+                                               new StorageModule(settings), new GPIOModule(), new SensorModule(),
+                                               new NotifierModule());
+
+      Aquabox aquabox = injector.getInstance(Aquabox.class);
+
+      // Only executed when the app is exited correctly
+      // see: https://dzone.com/articles/know-jvm-series-2-shutdown
+      Runtime.getRuntime().addShutdownHook(new Thread(() -> aquabox.stop()));
+
+      aquabox.start();
+   }
 }

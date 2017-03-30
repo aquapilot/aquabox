@@ -20,7 +20,7 @@ public interface AsciiArtConverter {
     * Convert a text to ascii art string
     *
     * @param text
-    * @return
+    * @return ready to print string ascii art string
     */
    String convertTextToAsciiArt(String text) throws IOException;
 }

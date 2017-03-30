@@ -28,55 +28,60 @@ import java.util.Collection;
  */
 public class PI4JGPIOServiceImpl implements GPIOService {
 
+   private final static GpioController gpio = GpioFactory.getInstance();
    @Log
    Logger log;
 
-    private final static GpioController gpio = GpioFactory.getInstance();
+   public GpioController getGPIOController() {
 
-    public GpioController getGPIOController() {
-        return gpio;
-    }
+      return gpio;
+   }
 
-    @Override
-    public GpioPinDigitalInput registerInputDigitalPin(Pin pin) {
-        return null;
-    }
+   @Override
+   public GpioPinDigitalInput registerInputDigitalPin(Pin pin) {
 
-    @Override
-    public GpioPinDigitalOutput registerOutputDigitalPin(Pin pin) {
-        return null;
-    }
+      return null;
+   }
 
-    @Override
-    public Collection<Pin> getRegistredInputPins() {
-        return null;
-    }
+   @Override
+   public GpioPinDigitalOutput registerOutputDigitalPin(Pin pin) {
 
-    @Override
-    public Collection<Pin> getRegistredOutputPins() {
-        return null;
-    }
+      return null;
+   }
 
-    @Override
-    public void registerChangeListener(Pin pin, GPIOPinStateListener listener) {
+   @Override
+   public Collection<Pin> getRegistredInputPins() {
 
-    }
+      return null;
+   }
 
-    @Override
-    public SpiDevice getSPI() {
+   @Override
+   public Collection<Pin> getRegistredOutputPins() {
 
-        return null;
-    }
+      return null;
+   }
 
-    @Override
-    public void start() throws Exception {
+   @Override
+   public void registerChangeListener(Pin pin, GPIOPinStateListener listener) {
 
-       log.debug(">> GPIO Service started");
-    }
+   }
 
-    @Override
-    public void stop() {
-        gpio.shutdown();    // stop all GPIO activity/threads by shutting down the GPIO controller
-       log.debug(">> GPIO Service stopped");
-    }
+   @Override
+   public SpiDevice getSPI() {
+
+      return null;
+   }
+
+   @Override
+   public void start() throws Exception {
+
+      this.log.debug(">> GPIO Service started");
+   }
+
+   @Override
+   public void stop() {
+
+      gpio.shutdown();    // stop all GPIO activity/threads by shutting down the GPIO controller
+      this.log.debug(">> GPIO Service stopped");
+   }
 }

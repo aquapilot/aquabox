@@ -15,5 +15,5 @@ package org.aquapilot.aquabox.modules.notifier.model;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum NotificationType {
-    NEW_SENSOR_DETECTED
+   NEW_SENSOR_DETECTED
 }

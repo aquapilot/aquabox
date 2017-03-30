@@ -31,62 +31,63 @@ import java.io.FileInputStream;
 @Singleton
 public class NotifierFirebaseServiceImpl implements NotifierService {
 
-    @Log
-    Logger log;
+   @Log
+   Logger log;
 
-    private Settings settings;
+   private Settings settings;
 
-    public NotifierFirebaseServiceImpl() {
+   public NotifierFirebaseServiceImpl() {
 
-    }
+   }
 
-    @Inject
-    public void setServices(Settings settings) {
+   @Inject
+   public void setServices(Settings settings) {
 
-        this.settings = settings;
-    }
+      this.settings = settings;
+   }
 
-    @Override
-    public void start() throws Exception {
+   @Override
+   public void start() throws Exception {
 
-        if (FirebaseApp.getApps().isEmpty()) {
-            // TODO: should read settings
-            String dbName = settings.getDatabaseName();
-            String databaseUrl = "https://" + dbName + ".firebaseio.com";
+      if (FirebaseApp.getApps().isEmpty()) {
+         // TODO: should read settings
+         String dbName = this.settings.getNotifierName();
+         String databaseUrl = "https://" + dbName + ".firebaseio.com";
 
-            FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+         FileInputStream serviceAccount = new FileInputStream("./toremove.json");
 
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-                    .setDatabaseUrl(databaseUrl)
-                    .build();
-            FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
-        }
-        log.debug(">>> FirebaseNotifier service started");
-    }
+         FirebaseOptions options = new FirebaseOptions.Builder()
+               .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+               .setDatabaseUrl(databaseUrl)
+               .build();
+         FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+      }
+      this.log.debug(">>> FirebaseNotifier service started");
+   }
 
-    @Override
-    public void stop() {
-        log.debug(">>> Firebase service notifier stopped");
-    }
+   @Override
+   public void stop() {
 
-    @Override
-    public void notify(NewSensorDetectedNotification notification) {
+      this.log.debug(">>> Firebase service notifier stopped");
+   }
 
-        System.out.println("Send notification in firebase queue");
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
+   @Override
+   public void notify(NewSensorDetectedNotification notification) {
 
-        ref.push().setValue(notification, (databaseError, databaseReference) -> {
-            if (databaseError != null) {
-                System.out.println("Data could not be saved " + databaseError.getMessage());
-            } else {
-                System.out.println("Data saved successfully.");
-            }
-        });
-    }
+      System.out.println("Send notification in firebase queue");
+      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
 
-    @Override
-    public void notifyNative() {
+      ref.push().setValue(notification, (databaseError, databaseReference) -> {
+         if (databaseError != null) {
+            System.out.println("Data could not be saved " + databaseError.getMessage());
+         } else {
+            System.out.println("Data saved successfully.");
+         }
+      });
+   }
 
-    }
+   @Override
+   public void notifyNative() {
+
+   }
 }

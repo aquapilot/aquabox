@@ -17,31 +17,31 @@ import org.kohsuke.args4j.Option;
  * It is based on Args4j
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see https://github.com/kohsuke/args4j
+ * @link https://github.com/kohsuke/args4j
  */
 public class CLIOptions {
 
-    @Option(name = "-h", aliases = {"--help"}, usage = "Display help")
-    private boolean help;
+   @Option(name = "-h", aliases = { "--help" }, usage = "Display help")
+   private boolean help;
 
-    @Option(name = "-v", aliases = {"--version"}, usage = "Display version")
-    private boolean version;
+   @Option(name = "-v", aliases = { "--version" }, usage = "Display version")
+   private boolean version;
 
-    @Option(name = "-d", aliases = {"--debug"}, usage = "Enable debug mode")
-    private boolean debug;
+   @Option(name = "-d", aliases = { "--debug" }, usage = "Enable debug mode")
+   private boolean debug;
 
    public boolean isHelp() {
 
-        return help;
-    }
+      return this.help;
+   }
 
-    public boolean isVersion() {
+   public boolean isVersion() {
 
-        return version;
-    }
+      return this.version;
+   }
 
-    public boolean isDebug() {
+   public boolean isDebug() {
 
-        return debug;
-    }
+      return this.debug;
+   }
 }

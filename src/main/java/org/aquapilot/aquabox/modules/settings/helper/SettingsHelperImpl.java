@@ -10,6 +10,7 @@
 package org.aquapilot.aquabox.modules.settings.helper;
 
 import com.google.common.base.Enums;
+import org.aquapilot.aquabox.modules.notifier.SupportedNotifier;
 import org.aquapilot.aquabox.modules.settings.exception.InvalidConfigFileException;
 import org.aquapilot.aquabox.modules.settings.model.Settings;
 import org.aquapilot.aquabox.modules.storage.SupportedDatabase;
@@ -28,8 +29,9 @@ public class SettingsHelperImpl implements SettingsHelper {
    private static final String DATABASE = "database";
    private static final String TYPE = "type";
    private static final String USERNAME = "username";
-   private static final String PASSWORD = "password";
+   private static final String PASSWORD = "password";//NOSONAR: it is not a password value only a text 'password'
    private static final String NAME = "name";
+   private static final String NOTIFIER = "notifier";
 
    @Override
    public Settings loadSettings() {
@@ -42,7 +44,7 @@ public class SettingsHelperImpl implements SettingsHelper {
          //------------
 
          // type
-         SupportedDatabase database = null;
+         SupportedDatabase database;
          String databaseTypeString = ini.get(DATABASE, TYPE);
 
          // TODO: ugly code need to be refactored
@@ -63,12 +65,42 @@ public class SettingsHelperImpl implements SettingsHelper {
          // password
          Optional<String> databasePassword = Optional.ofNullable(ini.get(DATABASE, PASSWORD));
 
+         //------------
+         // Notifier
+         //------------
+
+         // type
+         SupportedNotifier notifier;
+         String notifierTypeString = ini.get(NOTIFIER, TYPE);
+
+         // TODO: ugly code need to be refactored
+         if (!isNullOrEmpty(notifierTypeString) && Enums
+               .getIfPresent(SupportedNotifier.class, notifierTypeString)
+               .isPresent()) {
+            notifier = Enums.getIfPresent(SupportedNotifier.class, notifierTypeString).get();
+         } else {
+            throw new InvalidConfigFileException("Notifier type is not defined");
+         }
+
+         // url
+         Optional<String> notifierName = Optional.ofNullable(ini.get(NOTIFIER, NAME));
+
+         // user
+         Optional<String> notifierUsername = Optional.ofNullable(ini.get(NOTIFIER, USERNAME));
+
+         // password
+         Optional<String> notifierPassword = Optional.ofNullable(ini.get(NOTIFIER, PASSWORD));
+
          return Settings
                .newInstance()
                .database(database)
                .databaseName(databaseName.orElse(""))
                .databaseUser(databaseUsername.orElse(""))
                .databasePassword(databasePassword.orElse(""))
+               .notifierType(notifier)
+               .notifierName(notifierName.orElse(""))
+               .notifierUser(notifierUsername.orElse(""))
+               .notifierPassword(notifierPassword.orElse(""))
                .build();
 
       } catch (IOException e) {

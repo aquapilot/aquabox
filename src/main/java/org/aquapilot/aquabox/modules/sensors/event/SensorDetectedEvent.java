@@ -18,42 +18,50 @@ import javax.annotation.Generated;
  */
 public class SensorDetectedEvent {
 
-    private final String UUID;
+   private final String UUID;
 
-    private SensorDetectedEvent(String UUID) {
-        this.UUID = UUID;
-    }
+   private SensorDetectedEvent(String UUID) {
 
-    public static UUIDStep newInstance() {
-        return new Builder();
-    }
+      this.UUID = UUID;
+   }
 
-    public String getUUID() {
-        return UUID;
-    }
+   public static UUIDStep newInstance() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface UUIDStep {
-        FinalStep UUID(String UUID);
-    }
+      return new Builder();
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface FinalStep {
-        SensorDetectedEvent build();
-    }
+   public String getUUID() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    private static final class Builder implements UUIDStep, FinalStep {
-        private String UUID;
+      return this.UUID;
+   }
 
-        public FinalStep UUID(String UUID) {
-            this.UUID = UUID;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface UUIDStep {
 
-        public SensorDetectedEvent build() {
-            SensorDetectedEvent theObject = new SensorDetectedEvent(UUID);
-            return theObject;
-        }
-    }
+      FinalStep UUID(String UUID);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface FinalStep {
+
+      SensorDetectedEvent build();
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   private static final class Builder implements UUIDStep, FinalStep {
+
+      private String UUID;
+
+      public FinalStep UUID(String UUID) {
+
+         this.UUID = UUID;
+         return this;
+      }
+
+      public SensorDetectedEvent build() {
+
+         SensorDetectedEvent theObject = new SensorDetectedEvent(UUID);
+         return theObject;
+      }
+   }
 }

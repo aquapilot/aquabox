@@ -37,7 +37,6 @@ public class SystemUtil {
 
       LOGGER.info("Checking system ...");
 
-      StringBuilder checkSystemString = new StringBuilder();
       // TODO: implement get gpio version etc.
 
       checkJavaVersion();
@@ -48,7 +47,7 @@ public class SystemUtil {
       AnsiConsole.systemInstall();
       switch (type) {
          case OK:
-            System.out.println("[ " + ansi().fg(GREEN).a("OK").reset() + " ]\t" + description);
+            System.out.println("[" + ansi().fg(GREEN).a("OK").reset() + "   ]\t" + description);
             break;
          case WARNING:
             System.out.println("[" + ansi().fg(YELLOW).a("WARN").reset() + "]\t" + description);
@@ -84,7 +83,7 @@ public class SystemUtil {
       String version = System.getProperty("java.version");
       String normalizedVersion = "";
       if (version.contains("_")) {
-         normalizedVersion = version.substring(0, version.indexOf("_")).replace("1.", "");
+         normalizedVersion = version.substring(0, version.indexOf('_')).replace("1.", "");
       }
       return new DefaultArtifactVersion(normalizedVersion);
    }

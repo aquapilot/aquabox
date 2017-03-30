@@ -26,9 +26,8 @@ import static org.fusesource.jansi.Ansi.ansi;
  */
 public class CreditsUtil {
 
-   private AsciiArtConverter converter;
-
    private static final Logger LOGGER = LoggerFactory.getLogger(CreditsUtil.class);
+   private AsciiArtConverter converter;
 
    public CreditsUtil(AsciiArtConverter converter) {
 
@@ -42,7 +41,7 @@ public class CreditsUtil {
       creditsString.append("\n");
       creditsString.append("================================================================\n");
       try {
-         String asciiArt = converter.convertTextToAsciiArt("Aquapilot");
+         String asciiArt = this.converter.convertTextToAsciiArt("Aquapilot");
          creditsString.append(ansi().fg(BLUE).a(asciiArt).reset());
       } catch (IOException e) {
          LOGGER.warn("Could not generate ascii art for printCredits", e);

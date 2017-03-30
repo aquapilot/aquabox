@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.modules.logger.SLF4J;
+package org.aquapilot.aquabox.modules.logger.slf4j;
 
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
@@ -21,18 +21,18 @@ import java.lang.reflect.Field;
  * This class tell guice when to inject our Logger (basically it search all fields annotated with our @Log annotation)
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see http://forkbomb-blog.de/2012/slf4j-logger-injection-with-guice
+ * @link http://forkbomb-blog.de/2012/slf4j-logger-injection-with-guice
  */
 public class SLF4JTypeListener implements TypeListener {
 
-    @Override
-    public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter) {
+   @Override
+   public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter) {
 
-        for (Field field : typeLiteral.getRawType().getDeclaredFields()) {
-            if (field.getType() == Logger.class && field.isAnnotationPresent(Log.class)) {
-                typeEncounter.register(new SLF4JMembersInjector<T>(field));
-            }
-        }
-    }
+      for (Field field : typeLiteral.getRawType().getDeclaredFields()) {
+         if (field.getType() == Logger.class && field.isAnnotationPresent(Log.class)) {
+            typeEncounter.register(new SLF4JMembersInjector<>(field));
+         }
+      }
+   }
 
 }

@@ -20,8 +20,9 @@ import org.aquapilot.aquabox.modules.gpio.services.PI4JMockGPIOServiceImpl;
  */
 public class GPIOModule extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        bind(GPIOService.class).to(PI4JMockGPIOServiceImpl.class).asEagerSingleton();
-    }
+   @Override
+   protected void configure() {
+
+      bind(GPIOService.class).to(PI4JMockGPIOServiceImpl.class).asEagerSingleton();
+   }
 }

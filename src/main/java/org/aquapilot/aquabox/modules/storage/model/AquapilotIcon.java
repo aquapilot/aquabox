@@ -13,12 +13,8 @@ package org.aquapilot.aquabox.modules.storage.model;
  * This enum reference all available icons.
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see https://file.myfontastic.com/nqnrE8onhnZTT9MkMrsVrm/icons.css
+ * @link https://file.myfontastic.com/nqnrE8onhnZTT9MkMrsVrm/icons.css
  */
 public enum AquapilotIcon {
-    THERMOMETER,
-    SUN,
-    WATER,
-    PLUG,
-    FLASK
+   THERMOMETER, SUN, WATER, PLUG, FLASK
 }

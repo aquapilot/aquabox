@@ -16,12 +16,13 @@ package org.aquapilot.aquabox.modules.storage.model;
  */
 public class Measure {
 
-    public String uuid;
-    public String value;
+   public String uuid;
+   public String value;
 
-    public Measure(String uuid, String value) {
-        this.uuid = uuid;
-        this.value = value;
-    }
+   public Measure(String uuid, String value) {
+
+      this.uuid = uuid;
+      this.value = value;
+   }
 
 }

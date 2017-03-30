@@ -9,8 +9,13 @@
 
 package org.aquapilot.aquabox.cli;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.LoggerContext;
+import org.aquapilot.aquabox.modules.logger.Log;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class manage CLI parameters
@@ -21,6 +26,9 @@ import org.kohsuke.args4j.CmdLineParser;
  * @link https://github.com/kohsuke/args4j
  */
 public class CLIHelperImpl implements CLIHelper {
+
+   @Log
+   Logger log;
 
    private CmdLineParser parser;
 
@@ -37,35 +45,45 @@ public class CLIHelperImpl implements CLIHelper {
 
       CLIOptions options = new CLIOptions();
       this.parser = new CmdLineParser(options);
-      allowedToStart = true;
+      this.allowedToStart = true;
       try {
-         parser.parseArgument(args);
+         this.parser.parseArgument(args);
 
          if (options.isHelp()) {
             showHelp();
-            allowedToStart = false;
+            this.allowedToStart = false;
          }
          if (options.isVersion()) {
             showVersion();
-            allowedToStart = false;
+            this.allowedToStart = false;
          }
          if (options.isDebug()) {
-            debugEnabled = true;
+            this.debugEnabled = true;
+            enableDebug();
          } else {
-            debugEnabled = false;
+            this.debugEnabled = false;
          }
       } catch (CmdLineException e) {
+         this.log.debug("The given cli parameter is not a valid one.");
+
          // display help
          showHelp();
-         allowedToStart = false;
+         this.allowedToStart = false;
       }
 
    }
 
    @Override
+   public void enableDebug() {
+
+      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+      lc.getLogger("org.aquapilot.aquabox").setLevel(Level.DEBUG);
+   }
+
+   @Override
    public void showHelp() {
 
-      parser.printUsage(System.err);
+      this.parser.printUsage(System.err);
    }
 
    @Override
@@ -78,13 +96,13 @@ public class CLIHelperImpl implements CLIHelper {
    @Override
    public boolean isDebugEnabled() {
 
-      return debugEnabled;
+      return this.debugEnabled;
    }
 
    @Override
    public boolean isAppAllowedToStart() {
 
-      return allowedToStart;
+      return this.allowedToStart;
    }
 
 }

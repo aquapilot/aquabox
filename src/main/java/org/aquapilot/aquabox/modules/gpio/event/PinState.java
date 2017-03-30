@@ -15,6 +15,5 @@ package org.aquapilot.aquabox.modules.gpio.event;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum PinState {
-    HIGH,
-    LOW
+   HIGH, LOW
 }

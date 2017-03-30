@@ -22,5 +22,5 @@ import org.aquapilot.aquabox.modules.sensors.listener.SensorListener;
  */
 public interface SensorService extends Service {
 
-    void registerListener(SensorListener listener);
+   void registerListener(SensorListener listener);
 }

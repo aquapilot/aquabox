@@ -21,7 +21,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * This annotation provide a simple way to inject the logger
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see http://forkbomb-blog.de/2012/slf4j-logger-injection-with-guice
+ * @link http://forkbomb-blog.de/2012/slf4j-logger-injection-with-guice
  */
 
 @Scope

@@ -18,76 +18,90 @@ import javax.annotation.Generated;
  */
 public class SensorValueChangeEvent {
 
-    private final String UUID;
-    private final String oldValue;
-    private final String newValue;
+   private final String UUID;
+   private final String oldValue;
+   private final String newValue;
 
-    private SensorValueChangeEvent(String UUID, String oldValue, String newValue) {
-        this.UUID = UUID;
-        this.oldValue = oldValue;
-        this.newValue = newValue;
-    }
+   private SensorValueChangeEvent(String UUID, String oldValue, String newValue) {
 
-    public static UUIDStep newInstance() {
-        return new Builder();
-    }
+      this.UUID = UUID;
+      this.oldValue = oldValue;
+      this.newValue = newValue;
+   }
 
-    public String getUUID() {
-        return UUID;
-    }
+   public static UUIDStep newInstance() {
 
-    public String getOldValue() {
-        return oldValue;
-    }
+      return new Builder();
+   }
 
-    public String getNewValue() {
-        return newValue;
-    }
+   public String getUUID() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface UUIDStep {
-        OldValueStep UUID(String UUID);
-    }
+      return this.UUID;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface OldValueStep {
-        NewValueStep oldValue(String oldValue);
-    }
+   public String getOldValue() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface NewValueStep {
-        FinalStep newValue(String newValue);
-    }
+      return this.oldValue;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface FinalStep {
-        SensorValueChangeEvent build();
-    }
+   public String getNewValue() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    private static final class Builder implements UUIDStep, OldValueStep, NewValueStep, FinalStep {
-        private String UUID;
-        private String oldValue;
-        private String newValue;
+      return this.newValue;
+   }
 
-        public OldValueStep UUID(String UUID) {
-            this.UUID = UUID;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface UUIDStep {
 
-        public NewValueStep oldValue(String oldValue) {
-            this.oldValue = oldValue;
-            return this;
-        }
+      OldValueStep UUID(String UUID);
+   }
 
-        public FinalStep newValue(String newValue) {
-            this.newValue = newValue;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface OldValueStep {
 
-        public SensorValueChangeEvent build() {
-            SensorValueChangeEvent theObject = new SensorValueChangeEvent(UUID, oldValue, newValue);
-            return theObject;
-        }
-    }
+      NewValueStep oldValue(String oldValue);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface NewValueStep {
+
+      FinalStep newValue(String newValue);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface FinalStep {
+
+      SensorValueChangeEvent build();
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   private static final class Builder implements UUIDStep, OldValueStep, NewValueStep, FinalStep {
+
+      private String UUID;
+      private String oldValue;
+      private String newValue;
+
+      public OldValueStep UUID(String UUID) {
+
+         this.UUID = UUID;
+         return this;
+      }
+
+      public NewValueStep oldValue(String oldValue) {
+
+         this.oldValue = oldValue;
+         return this;
+      }
+
+      public FinalStep newValue(String newValue) {
+
+         this.newValue = newValue;
+         return this;
+      }
+
+      public SensorValueChangeEvent build() {
+
+         SensorValueChangeEvent theObject = new SensorValueChangeEvent(UUID, oldValue, newValue);
+         return theObject;
+      }
+   }
 }

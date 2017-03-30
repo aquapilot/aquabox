@@ -16,17 +16,17 @@ package org.aquapilot.aquabox.modules.storage.model;
  */
 public enum AquaticSystemType {
 
-    AQUARIUM(0),
-    AQUAPONIC(1),
-    HYDROPONIC(2);
+   AQUARIUM(0), AQUAPONIC(1), HYDROPONIC(2);
 
-    private int value;
+   private int value;
 
-    AquaticSystemType(int value) {
-        this.value = value;
-    }
+   AquaticSystemType(int value) {
 
-    public int getValue() {
-        return value;
-    }
+      this.value = value;
+   }
+
+   public int getValue() {
+
+      return this.value;
+   }
 }

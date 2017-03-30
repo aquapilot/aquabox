@@ -20,76 +20,90 @@ import javax.annotation.Generated;
  */
 public class StateChangedEvent {
 
-    private final PinState oldState;
-    private final PinState newState;
-    private final Pin pin;
+   private final PinState oldState;
+   private final PinState newState;
+   private final Pin pin;
 
-    private StateChangedEvent(PinState oldState, PinState newState, Pin pin) {
-        this.oldState = oldState;
-        this.newState = newState;
-        this.pin = pin;
-    }
+   private StateChangedEvent(PinState oldState, PinState newState, Pin pin) {
 
-    public static OldStateStep newInstance() {
-        return new Builder();
-    }
+      this.oldState = oldState;
+      this.newState = newState;
+      this.pin = pin;
+   }
 
-    public PinState getOldState() {
-        return oldState;
-    }
+   public static OldStateStep newInstance() {
 
-    public PinState getNewState() {
-        return newState;
-    }
+      return new Builder();
+   }
 
-    public Pin getPin() {
-        return pin;
-    }
+   public PinState getOldState() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface OldStateStep {
-        NewStateStep oldState(PinState oldState);
-    }
+      return this.oldState;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface NewStateStep {
-        PinStep newState(PinState newState);
-    }
+   public PinState getNewState() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface PinStep {
-        FinalStep pin(Pin pin);
-    }
+      return this.newState;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface FinalStep {
-        StateChangedEvent build();
-    }
+   public Pin getPin() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    private static final class Builder implements OldStateStep, NewStateStep, PinStep, FinalStep {
-        private PinState oldState;
-        private PinState newState;
-        private Pin pin;
+      return this.pin;
+   }
 
-        public NewStateStep oldState(PinState oldState) {
-            this.oldState = oldState;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface OldStateStep {
 
-        public PinStep newState(PinState newState) {
-            this.newState = newState;
-            return this;
-        }
+      NewStateStep oldState(PinState oldState);
+   }
 
-        public FinalStep pin(Pin pin) {
-            this.pin = pin;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface NewStateStep {
 
-        public StateChangedEvent build() {
-            StateChangedEvent theObject = new StateChangedEvent(oldState, newState, pin);
-            return theObject;
-        }
-    }
+      PinStep newState(PinState newState);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface PinStep {
+
+      FinalStep pin(Pin pin);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface FinalStep {
+
+      StateChangedEvent build();
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   private static final class Builder implements OldStateStep, NewStateStep, PinStep, FinalStep {
+
+      private PinState oldState;
+      private PinState newState;
+      private Pin pin;
+
+      public NewStateStep oldState(PinState oldState) {
+
+         this.oldState = oldState;
+         return this;
+      }
+
+      public PinStep newState(PinState newState) {
+
+         this.newState = newState;
+         return this;
+      }
+
+      public FinalStep pin(Pin pin) {
+
+         this.pin = pin;
+         return this;
+      }
+
+      public StateChangedEvent build() {
+
+         StateChangedEvent theObject = new StateChangedEvent(oldState, newState, pin);
+         return theObject;
+      }
+   }
 }

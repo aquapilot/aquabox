@@ -13,16 +13,17 @@ package org.aquapilot.aquabox.common;
  * This interface was introduced to follow google/guice good pratices guidelines
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @see https://github.com/google/guice/wiki/ModulesShouldBeFastAndSideEffectFree
+ * @link https://github.com/google/guice/wiki/ModulesShouldBeFastAndSideEffectFree
  */
 public interface Service {
-    /**
-     * Starts the service. This method blocks until the service has completely started.
-     */
-    void start() throws Exception;
 
-    /**
-     * Stops the service. This method blocks until the service has completely shut down.
-     */
-    void stop();
+   /**
+    * Starts the service. This method blocks until the service has completely started.
+    */
+   void start() throws Exception;
+
+   /**
+    * Stops the service. This method blocks until the service has completely shut down.
+    */
+   void stop();
 }

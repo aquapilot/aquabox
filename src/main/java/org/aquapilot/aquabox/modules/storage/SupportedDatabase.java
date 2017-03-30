@@ -19,15 +19,17 @@ import org.aquapilot.aquabox.modules.storage.services.StorageService;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum SupportedDatabase {
-    FIREBASE(FirebaseServiceImpl.class);
+   FIREBASE(FirebaseServiceImpl.class);
 
-    private Class<? extends StorageService> clazz;
+   private Class<? extends StorageService> clazz;
 
-    SupportedDatabase(Class<? extends StorageService> clazz) {
-        this.clazz = clazz;
-    }
+   SupportedDatabase(Class<? extends StorageService> clazz) {
 
-    public Class<? extends StorageService> getAssociatedServiceClass() {
-        return this.clazz;
-    }
+      this.clazz = clazz;
+   }
+
+   public Class<? extends StorageService> getAssociatedServiceClass() {
+
+      return this.clazz;
+   }
 }

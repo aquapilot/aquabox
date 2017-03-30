@@ -19,12 +19,12 @@ import org.aquapilot.aquabox.modules.notifier.model.NewSensorDetectedNotificatio
  */
 public interface NotifierService extends Service {
 
-    /**
-     * Publish a notification on a firebase queue
-     *
-     * @param notification
-     */
-    void notify(NewSensorDetectedNotification notification);
+   /**
+    * Publish a notification on a firebase queue
+    *
+    * @param notification
+    */
+   void notify(NewSensorDetectedNotification notification);
 
-    void notifyNative();
+   void notifyNative();
 }

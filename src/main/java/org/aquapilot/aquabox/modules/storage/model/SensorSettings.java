@@ -15,4 +15,5 @@ package org.aquapilot.aquabox.modules.storage.model;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public class SensorSettings {
+
 }
