@@ -5,11 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>aquabox</groupId>
     <artifactId>aquapilot.org</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>SNAPSHOT</version>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Vars overwritten by CI tool -->
+        <buildNumber>1</buildNumber>
 
         <!-- Dep versions -->
         <pi4j.version>1.1</pi4j.version>
@@ -90,6 +93,11 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
             <version>3.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcabi</groupId>
+            <artifactId>jcabi-manifests</artifactId>
+            <version>1.1</version>
         </dependency>
         <!-- For testing purpose only -->
         <dependency>
@@ -223,12 +231,28 @@
     </profiles>
     <build>
         <finalName>aquabox</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/version.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>**/version.txt</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <!-- Maven Shade Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
+                <version>3.0.0</version>
                 <executions>
                     <!-- Run shade goal on package phase -->
                     <execution>

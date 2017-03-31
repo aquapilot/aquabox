@@ -12,7 +12,7 @@ package org.aquapilot.aquabox.cli;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,44 +32,44 @@ public class CLIHelperImplTest {
       cliHelper = spy(new CLIHelperImpl());
    }
 
-    @Test
-    public void parseArguments_shouldNotThrowException_whenArgsIsNull() {
+   @Test
+   public void parseArguments_shouldNotThrowException_whenArgsIsNull() {
 
-       // Given
-       String[] nullArgs = null;
+      // Given
+      String[] nullArgs = null;
 
-       // When
-       cliHelper.parseArguments(nullArgs);
+      // When
+      cliHelper.parseArguments(nullArgs);
 
-       // Then
-       // No exception should occurs
-    }
+      // Then
+      // No exception should occurs
+   }
 
-    @Test
-    public void parseArguments_shouldNotThrowException_whenArgsIsAnEmptyArray() {
+   @Test
+   public void parseArguments_shouldNotThrowException_whenArgsIsAnEmptyArray() {
 
-       // Given
-       String[] emptyArgs = new String[0];
+      // Given
+      String[] emptyArgs = new String[0];
 
-       // When
-       cliHelper.parseArguments(emptyArgs);
+      // When
+      cliHelper.parseArguments(emptyArgs);
 
-       // Then
-       // No exception should occurs
-    }
+      // Then
+      // No exception should occurs
+   }
 
-    @Test
-    public void showHelp_shouldBeCalled_whenRequestedWithHelpFlag() throws Exception {
+   @Test
+   public void showHelp_shouldBeCalled_whenRequestedWithHelpFlag() throws Exception {
 
-       // Given
-       String[] args = new String[] { "-h" };
+      // Given
+      String[] args = new String[] { "-h" };
 
-       // When
-       cliHelper.parseArguments(args);
+      // When
+      cliHelper.parseArguments(args);
 
-       // Then
-       verify(cliHelper, times(1)).showHelp();
-    }
+      // Then
+      verify(cliHelper, times(1)).showHelp();
+   }
 
    @Test
    public void showHelp_shouldBeCalled_whenRequestedWithAlternativeHelpFlag() throws Exception {
@@ -95,7 +95,6 @@ public class CLIHelperImplTest {
 
       // Then
       verify(cliHelper, times(1)).showHelp();
-
    }
 
    @Test
@@ -125,7 +124,7 @@ public class CLIHelperImplTest {
    }
 
    @Test
-   public void isDebugEnabled_shouldEnableDebug_whenRequestedWithDebugFlag() throws Exception {
+   public void enableDebug_shouldBeCalled_whenRequestedWithDebugFlag() throws Exception {
 
       // Given
       String[] args = new String[] { "-d" };
@@ -134,11 +133,11 @@ public class CLIHelperImplTest {
       cliHelper.parseArguments(args);
 
       // Then
-      assertEquals(true, cliHelper.isDebugEnabled());
+      verify(cliHelper, times(1)).enableDebug();
    }
 
    @Test
-   public void isDebugEnabled_shouldBeTrue_whenRequestedWithDebugAlternativeFlag() throws Exception {
+   public void enableDebug_shouldBeCalled_whenRequestedWithDebugAlternativeFlag() throws Exception {
 
       // Given
       String[] args = new String[] { "--debug" };
@@ -147,20 +146,20 @@ public class CLIHelperImplTest {
       cliHelper.parseArguments(args);
 
       // Then
-      assertEquals(true, cliHelper.isDebugEnabled());
+      verify(cliHelper, times(1)).enableDebug();
    }
 
    @Test
-   public void isDebugEnabled_shouldBeFalse_whenRequestedWithoutDebugFlag() throws Exception {
+   public void enableDebug_shouldNotBeCalledByDefault() throws Exception {
 
       // Given
-      String[] args = new String[] { "--something" };
+      String[] args = new String[0];
 
       // When
       cliHelper.parseArguments(args);
 
       // Then
-      assertEquals(false, cliHelper.isDebugEnabled());
+      verify(cliHelper, never()).enableDebug();
    }
 
 }

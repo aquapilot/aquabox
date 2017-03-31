@@ -11,7 +11,8 @@ package org.aquapilot.aquabox.cli;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
-import org.aquapilot.aquabox.modules.logger.Log;
+import org.aquapilot.aquabox.common.version.VersionHelper;
+import org.aquapilot.aquabox.common.version.VersionHelperImpl;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.slf4j.Logger;
@@ -27,13 +28,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CLIHelperImpl implements CLIHelper {
 
-   @Log
-   Logger log;
+   // We cannot inject logger here (it is not a guice module)
+   private static final Logger LOGGER = LoggerFactory.getLogger(CLIHelperImpl.class);
 
    private CmdLineParser parser;
-
-   private boolean debugEnabled;
-
    private boolean allowedToStart = true;
 
    @Override
@@ -58,13 +56,10 @@ public class CLIHelperImpl implements CLIHelper {
             this.allowedToStart = false;
          }
          if (options.isDebug()) {
-            this.debugEnabled = true;
             enableDebug();
-         } else {
-            this.debugEnabled = false;
          }
       } catch (CmdLineException e) {
-         this.log.debug("The given cli parameter is not a valid one.");
+         LOGGER.debug("The given cli parameter is not a valid one.");
 
          // display help
          showHelp();
@@ -89,14 +84,10 @@ public class CLIHelperImpl implements CLIHelper {
    @Override
    public void showVersion() {
 
-      //  throw new NotImplementedException();
-      System.out.println("TODO");
-   }
+      VersionHelper versionHelper = new VersionHelperImpl();
 
-   @Override
-   public boolean isDebugEnabled() {
-
-      return this.debugEnabled;
+      String version = versionHelper.getVersion();
+      System.out.println(version);
    }
 
    @Override

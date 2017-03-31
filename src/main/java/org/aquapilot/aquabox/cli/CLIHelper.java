@@ -36,13 +36,6 @@ public interface CLIHelper {
    void showVersion();
 
    /**
-    * When flag -d or --debug is given as args it enable the debug mode
-    *
-    * @return true when debug mode is enabled
-    */
-   boolean isDebugEnabled();
-
-   /**
     * Returns true if the received CLI parameters are not blockers
     *
     * @return
