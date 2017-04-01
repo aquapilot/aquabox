@@ -9,6 +9,7 @@
 
 package org.aquapilot.aquabox.modules.gpio.listener;
 
+import org.aquapilot.aquabox.common.AquaboxListener;
 import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
 
 /**
@@ -17,21 +18,21 @@ import org.aquapilot.aquabox.modules.gpio.event.StateChangedEvent;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 @FunctionalInterface
-public interface GPIOPinStateListener {
+public interface GPIOPinStateListener extends AquaboxListener {
 
-   /**
-    * Called when a pin changed state
-    *
-    * @param event
-    */
-   void onPinStateChanged(StateChangedEvent event);
+    /**
+     * Called when a pin changed state
+     *
+     * @param event
+     */
+    void onPinStateChanged(StateChangedEvent event);
 
-   default void onPinStateHigh() {
+    default void onPinStateHigh() {
 
-   }
+    }
 
-   default void onPinStateLow() {
+    default void onPinStateLow() {
 
-   }
+    }
 
 }
