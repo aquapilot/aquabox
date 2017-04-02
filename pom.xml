@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ This file is part of the Aquapilot package.
+  ~ <p>
+  ~ (c) Sébastien Vermeille <sebastien.vermeille@gmail.com>
+  ~ <p>
+  ~ For the full copyright and license information, please view the LICENSE
+  ~ file that was distributed with this source code.
+  -->
+
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>aquabox</groupId>
-    <artifactId>aquapilot.org</artifactId>
-    <version>SNAPSHOT</version>
+    <groupId>aquapilot.org</groupId>
+    <artifactId>aquabox</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>api</module>
+        <module>server</module>
+    </modules>
+
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -27,208 +43,8 @@
 
         <cucumber.options>--plugin pretty --tags @wip</cucumber.options>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>com.pi4j</groupId>
-            <artifactId>pi4j-core</artifactId>
-            <version>${pi4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${google.guice.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${google.guava.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.lalyos</groupId>
-            <artifactId>jfiglet</artifactId>
-            <version>${jfiglet.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.loginject</groupId>
-            <artifactId>loginject-api</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.loginject</groupId>
-            <artifactId>loginject-guice</artifactId>
-            <version>1.0.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ini4j</groupId>
-            <artifactId>ini4j</artifactId>
-            <version>${ini4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
-            <version>${args4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.firebase</groupId>
-            <artifactId>firebase-admin</artifactId>
-            <version>${firebase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>1.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>3.0.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-manifests</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <!-- For testing purpose only -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-        </dependency>
-        <!-- For integration testing -->
 
-    </dependencies>
-    <profiles>
-        <profile>
-            <id>integration-tests</id>
-            <properties>
-                <cucumber.options>--plugin html:target/cucumber --tags @wip,@foo</cucumber.options>
-            </properties>
 
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>versions-maven-plugin</artifactId>
-                        <version>2.2</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>1.10</version>
-                        <executions>
-                            <execution>
-                                <id>add-source</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-test-source</goal>
-                                </goals>
-                                <configuration>
-                                    <sources>
-                                        <source>src/it/java</source>
-                                    </sources>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>add-resource</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>add-test-resource</goal>
-                                </goals>
-                                <configuration>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/it/resources</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <!-- block unit tests execution -->
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.19.1</version>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <systemPropertyVariables>
-                                <cucumber.options>${cucumber.options}</cucumber.options>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-
-            <dependencies>
-                <dependency>
-                    <groupId>info.cukes</groupId>
-                    <artifactId>cucumber-picocontainer</artifactId>
-                    <version>1.2.4</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>info.cukes</groupId>
-                    <artifactId>cucumber-junit</artifactId>
-                    <version>1.2.4</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>selenium-java</artifactId>
-                    <version>2.53.1</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>htmlunit-driver</artifactId>
-                    <version>2.23.2</version>
-                </dependency>
-                <!-- Deps to fix https://github.com/SeleniumHQ/htmlunit-driver/issues/22 -->
-                <dependency>
-                    <groupId>org.eclipse.jetty.websocket</groupId>
-                    <artifactId>websocket-client</artifactId>
-                    <version>9.4.0.M1</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.picocontainer</groupId>
-                    <artifactId>picocontainer</artifactId>
-                    <version>2.15</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
     <build>
         <finalName>aquabox</finalName>
         <resources>
@@ -265,7 +81,7 @@
                                 <!-- add Main-Class to manifest file -->
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.aquapilot.aquabox.Launcher</mainClass>
+                                    <mainClass>org.aquapilot.aquabox.server.Launcher</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
