@@ -13,6 +13,7 @@ import org.aquapilot.aquabox.api.exception.InvalidPluginException;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -67,6 +68,8 @@ public interface PluginManager {
      */
     public boolean isPluginEnabled(JavaPlugin plugin);
 
+    PluginDescriptor getPluginDescriptor(File file) throws InvalidPluginException;
+
     /**
      * Loads the plugin in the specified file
      * <p>
@@ -90,7 +93,7 @@ public interface PluginManager {
      * @param path Directory to check for plugins
      * @return A list of all plugins loaded
      */
-    Collection<JavaPlugin> loadPlugins(Path path);
+    Collection<JavaPlugin> loadPlugins(Path path) throws FileNotFoundException;
 
     /**
      * Disables all the loaded plugins

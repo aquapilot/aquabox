@@ -10,14 +10,13 @@
 package org.aquapilot.aquabox.server.modules.gpio.listener;
 
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
-import org.aquapilot.aquabox.server.modules.gpio.event.StateChangedEvent;
+import org.aquapilot.aquabox.api.event.StateChangedEvent;
 
 /**
  * This class is intended to provide async call when something occurs on the selected pins
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-@FunctionalInterface
 public interface GPIOPinStateListener extends AquaboxListener {
 
     /**

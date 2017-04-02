@@ -10,12 +10,16 @@
 package org.aquapilot.aquabox.server.plugins;
 
 import org.aquapilot.aquabox.api.PluginManager;
+import org.aquapilot.aquabox.api.exception.InvalidPluginException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.nio.file.Path;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +40,35 @@ public class PluginManagerImplTest {
 
     }
 
+    @Test(expected = NullPointerException.class)
+    public void loadPlugins_shouldThrowNullPointerException_whenANullPathIsGiven() throws Exception{
+        pluginManager.loadPlugins(null);
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void loadPlugins_shouldThrowAnException_whenTheGivenPathDoesntExists() throws Exception{
+        // Given
+        Path wrongPath = new File("src/test/resources/wrongdir").toPath();
+
+        // When
+        pluginManager.loadPlugins(wrongPath);
+
+        // Then
+        // should throw an exception
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void loadPlugins_shouldThrowAnException_whenTheGivenPathIsNotADirectory() throws Exception{
+        // Given
+        Path filePath = new File("src/test/resources/plugins/textfile.txt").toPath();
+
+        // When
+        pluginManager.loadPlugins(filePath);
+
+        // Then
+        // should throw an exception
+    }
+
     @Test
     public void loadPlugins_shouldOnlyLoad2Plugins_whenOnly2ArePresent() throws Exception {
 
@@ -50,14 +83,113 @@ public class PluginManagerImplTest {
         verify(pluginManager, times(2)).loadPlugin(any());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void loadPlugins_shouldThrowNullPointerException_whenANullPathIsGiven(){
-        pluginManager.loadPlugins(null);
+    @Test
+    public void getPluginDescriptor_shouldReturnAPluginDescriptor_withACorrectlyWrittenPlugin() throws Exception {
+
+        // Given
+        File goodPlugin = new File("src/test/resources/plugins/StatusLed.jar");
+
+        // When
+        pluginManager.getPluginDescriptor(goodPlugin);
+
+        // Then
+        // Nothing wrong should happend
     }
 
     @Test
-    public void loadPlugin_shouldVerifyTheGivenFileExists(){
+    public void loadPlugin_shouldThrowException_whenTheFileDoesntExists() throws Exception {
+
+        // Given
+        File unexistingFile = new File("src/test/resources/plugins/doesnt-exist.jar");
+
+        // When
+        pluginManager.loadPlugin(unexistingFile);
+
+        // Then
+        // it should throw an exception
+        fail();
+    }
+
+    @Test
+    public void loadPlugin_shouldThrowException_whenTheGivenFileIsADirectory() throws Exception {
+
+        // Given
+        File directory = new File("src/test/resources/plugins");
+
+        // When
+        pluginManager.loadPlugin(directory);
+
+        // Then
+        // it should throw an exception
+        fail();
 
     }
 
+    @Test
+    public void loadPlugin_shouldThrowException_whenTheGivenFilenameDoesntEndWithJar() throws Exception {
+
+        // Given
+        File textFile = new File("src/test/resources/plugins/wrong.txt");
+
+        // When
+        pluginManager.loadPlugin(textFile);
+
+        // Then
+        // it should throw an exception
+        fail();
+
+    }
+
+
+    @Test(expected = InvalidPluginException.class)
+    public void loadPlugin_shouldThrowException_whenTheGivenPluginDoesntHaveAPluginINIFile() throws Exception {
+
+        // Given
+        File plugin = new File("src/test/resources/plugins/plugin-without-pluginini.jar");
+
+        // When
+        pluginManager.loadPlugin(plugin);
+
+        // Then
+        // it should throw an exception
+    }
+
+    @Test(expected = InvalidPluginException.class)
+    public void loadPlugin_shouldThrowException_whenTheGivenPluginDoesntHaveAMainClassDefined() throws Exception {
+
+        // Given
+        File textFile = new File("src/test/resources/plugins/plugin-without-mainclassdeclared.jar");
+
+        // When
+        pluginManager.loadPlugin(textFile);
+
+        // Then
+        // it should throw an exception
+    }
+
+    @Test(expected = InvalidPluginException.class)
+    public void loadPlugin_shouldThrowException_whenTheGivenPluginDoesntHaveAMainClassExtendingJavaPlugin() throws Exception {
+
+        // Given
+        File textFile = new File("src/test/resources/plugins/invalidPlugin.jar");
+
+        // When
+        pluginManager.loadPlugin(textFile);
+
+        // Then
+        // it should throw an exception
+    }
+
+    @Test
+    public void loadPlugin_shouldThrowException_whenTheGivenPluginDoesntHaveAMainfdsafdasfdsafdsaClassExtendingJavaPlugin() throws Exception {
+
+        // Given
+        File plugin = new File("src/test/resources/plugins/StatusLed.jar");
+
+        // When
+        pluginManager.loadPlugin(plugin);
+
+        // Then
+        // it should throw an exception
+    }
 }

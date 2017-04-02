@@ -16,8 +16,8 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.impl.SpiDeviceImpl;
-import org.aquapilot.aquabox.server.modules.gpio.event.PinState;
-import org.aquapilot.aquabox.server.modules.gpio.event.StateChangedEvent;
+import org.aquapilot.aquabox.api.PinState;
+import org.aquapilot.aquabox.server.modules.gpio.event.StateChangedEventImpl;
 import org.aquapilot.aquabox.server.modules.gpio.listener.GPIOPinStateListener;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.slf4j.Logger;
@@ -113,7 +113,7 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
             for (Collection<GPIOPinStateListener> listenersCollection : this.listeners.values()) {
                listenersCollection.forEach(listener -> {
 
-                  StateChangedEvent event = StateChangedEvent
+                  StateChangedEventImpl event = StateChangedEventImpl
                         .newInstance()
                         .oldState(PinState.LOW)
                         .newState(PinState.HIGH)

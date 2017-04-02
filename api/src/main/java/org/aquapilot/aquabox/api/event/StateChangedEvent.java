@@ -7,21 +7,20 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api.exception;
+package org.aquapilot.aquabox.api.event;
 
-import java.io.FileNotFoundException;
+import org.aquapilot.aquabox.api.Pin;
+import org.aquapilot.aquabox.api.PinState;
 
 /**
  * This class TODO
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class InvalidPluginException extends Exception {
-    public InvalidPluginException(FileNotFoundException e) {
+public interface StateChangedEvent {
+    PinState getOldState();
 
-    }
+    PinState getNewState();
 
-    public InvalidPluginException(String s) {
-        super(s);
-    }
+    Pin getPin();
 }

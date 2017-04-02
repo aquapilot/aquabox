@@ -7,13 +7,12 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.modules.gpio.event;
+package org.aquapilot.aquabox.api;
 
 /**
  * This class TODO
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum PinState {
-   HIGH, LOW
+public class Pin {
 }

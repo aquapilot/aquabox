@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.plugins;
+package org.aquapilot.aquabox.api;
 
 import javax.annotation.Generated;
 
