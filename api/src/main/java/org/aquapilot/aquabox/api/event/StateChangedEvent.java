@@ -9,7 +9,7 @@
 
 package org.aquapilot.aquabox.api.event;
 
-import org.aquapilot.aquabox.api.Pin;
+import com.pi4j.io.gpio.Pin;
 import org.aquapilot.aquabox.api.PinState;
 
 /**

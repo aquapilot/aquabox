@@ -25,7 +25,12 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -165,13 +170,14 @@ public class PluginManagerImpl implements PluginManager {
                     e.printStackTrace();
                 }
             }
-            try {
-                jar.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+           if (jar != null) {
+              try {
+                 jar.close();
+              } catch (IOException e) {
+                 e.printStackTrace();
+              }
             }
         }
-
         return null;
     }
 

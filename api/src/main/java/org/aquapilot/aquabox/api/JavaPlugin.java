@@ -10,6 +10,8 @@
 package org.aquapilot.aquabox.api;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 
 /**
@@ -17,13 +19,15 @@ import java.util.Properties;
  */
 public abstract class JavaPlugin {
 
+   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
     public abstract void onEnable();
 
     public abstract void onDisable();
 
     public Logger getLogger() {
 
-        return null;
+       return LOGGER;
     }
 
     public Properties getPluginProperties() {

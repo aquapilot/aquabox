@@ -11,7 +11,6 @@ package org.aquapilot.aquabox.server.plugins;
 
 import org.aquapilot.aquabox.api.PluginManager;
 import org.aquapilot.aquabox.api.exception.InvalidPluginException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +20,10 @@ import java.nio.file.Path;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * This class TODO
@@ -184,7 +186,7 @@ public class PluginManagerImplTest {
     public void loadPlugin_shouldThrowException_whenTheGivenPluginDoesntHaveAMainfdsafdasfdsafdsaClassExtendingJavaPlugin() throws Exception {
 
         // Given
-        File plugin = new File("src/test/resources/plugins/StatusLed.jar");
+       File plugin = new File("src/test/resources/plugins/sample-plugin.jar");
 
         // When
         pluginManager.loadPlugin(plugin);
