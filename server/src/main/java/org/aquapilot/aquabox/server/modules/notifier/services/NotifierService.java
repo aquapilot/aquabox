@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.modules.notifier.serices;
+package org.aquapilot.aquabox.server.modules.notifier.services;
 
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;

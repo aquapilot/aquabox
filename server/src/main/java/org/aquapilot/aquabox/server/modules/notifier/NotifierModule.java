@@ -10,8 +10,8 @@
 package org.aquapilot.aquabox.server.modules.notifier;
 
 import com.google.inject.AbstractModule;
-import org.aquapilot.aquabox.server.modules.notifier.serices.NotifierFirebaseServiceImpl;
-import org.aquapilot.aquabox.server.modules.notifier.serices.NotifierService;
+import org.aquapilot.aquabox.server.modules.notifier.services.NotifierFirebaseServiceImpl;
+import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
 
 /**
  * This Module provide ability to communicate with the raspberry pi GPIO

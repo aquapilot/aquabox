@@ -7,10 +7,11 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.plugins;
+package org.aquapilot.aquabox.server.modules.plugins;
 
 import org.aquapilot.aquabox.api.PluginManager;
 import org.aquapilot.aquabox.api.exception.InvalidPluginException;
+import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
 import org.junit.Before;
 import org.junit.Test;
 

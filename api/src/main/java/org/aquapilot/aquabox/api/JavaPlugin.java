@@ -12,14 +12,24 @@ package org.aquapilot.aquabox.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Properties;
-
 /**
  * Created by vermeille on 31.03.2017.
  */
 public abstract class JavaPlugin {
 
    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
+   private PluginDescriptor descriptor;
+
+   public JavaPlugin(){}
+
+//   public JavaPlugin(PluginDescriptor descriptor){
+//       this.descriptor = descriptor;
+//   }
+
+    protected void init(PluginDescriptor descriptor){
+       this.descriptor = descriptor;
+    }
 
     public abstract void onEnable();
 
@@ -30,11 +40,7 @@ public abstract class JavaPlugin {
        return LOGGER;
     }
 
-    public Properties getPluginProperties() {
-        return null;
-    }
-
-    public PluginManager getPluginManager() {
-        return null;
+    public PluginDescriptor getPluginDescriptor() {
+        return descriptor;
     }
 }

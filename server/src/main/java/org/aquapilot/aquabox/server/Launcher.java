@@ -16,6 +16,7 @@ import org.aquapilot.aquabox.server.cli.CLIHelperImpl;
 import org.aquapilot.aquabox.server.modules.gpio.GPIOModule;
 import org.aquapilot.aquabox.server.modules.logger.LoggerModule;
 import org.aquapilot.aquabox.server.modules.notifier.NotifierModule;
+import org.aquapilot.aquabox.server.modules.plugins.PluginsModule;
 import org.aquapilot.aquabox.server.modules.sensors.SensorModule;
 import org.aquapilot.aquabox.server.modules.settings.SettingsModule;
 import org.aquapilot.aquabox.server.modules.settings.helper.SettingsHelper;
@@ -50,6 +51,7 @@ public class Launcher {
 
       Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
                                                new StorageModule(settings), new GPIOModule(), new SensorModule(),
+                                                new PluginsModule(),
                                                new NotifierModule());
 
       Aquabox aquabox = injector.getInstance(Aquabox.class);

@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.plugins;
+package org.aquapilot.aquabox.server.modules.plugins.manager;
 
 import org.aquapilot.aquabox.api.JavaPlugin;
 import org.aquapilot.aquabox.api.PluginDescriptor;
@@ -15,11 +15,15 @@ import org.aquapilot.aquabox.api.PluginManager;
 import org.aquapilot.aquabox.api.exception.InvalidPluginException;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
 import org.ini4j.Ini;
+import sun.plugin2.main.server.Plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -43,9 +47,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PluginManagerImpl implements PluginManager {
 
-    public Map<JavaPlugin, AquaboxListener> plugins = new HashMap<>();
+    private Map<File, JavaPlugin> plugins = new HashMap<>();
 
-    public List<Class> pluginsList = new ArrayList<Class>();
+    private List<Class> pluginsList = new ArrayList<Class>();
+    private Map<JavaPlugin, PluginDescriptor> pluginsDescriptors = new HashMap<>();
 
     @Override
     public JavaPlugin getPlugin(String name) {
@@ -54,7 +59,7 @@ public class PluginManagerImpl implements PluginManager {
 
     @Override
     public Collection<JavaPlugin> getPlugins() {
-        return plugins.keySet();
+        return plugins.values();
     }
 
     @Override
@@ -65,6 +70,10 @@ public class PluginManagerImpl implements PluginManager {
     @Override
     public boolean isPluginEnabled(JavaPlugin plugin) {
         return false;
+    }
+
+    public  PluginDescriptor getPluginDescriptor(JavaPlugin plugin){
+        return this.pluginsDescriptors.get(plugin);
     }
 
     @Override
@@ -140,7 +149,7 @@ public class PluginManagerImpl implements PluginManager {
 
 
             Class jarClass = Class.forName(mainClass, true, loader);
-            this.pluginsList.add(jarClass);
+
 
             Class<? extends JavaPlugin> pluginClass;
             try {
@@ -149,9 +158,24 @@ public class PluginManagerImpl implements PluginManager {
                 throw new InvalidPluginException("main class `" + pluginDescriptor.getMainClass() + "' does not extend JavaPlugin");
             }
 
-            JavaPlugin plugin = pluginClass.newInstance();
-            plugin.onEnable();
+//            NewInstanceWithReflection object = (NewInstanceWithReflection)Class.forName("NewInstanceWithReflection").newInstance();
+//            Constructor constructor = NewInstanceWithReflection.class.getDeclaredConstructor( new Class[] {String.class});
+//            NewInstanceWithReflection object1 = (NewInstanceWithReflection)constructor.newInstance(new Object[]{"StackOverFlow"});
 
+            JavaPlugin plugin = pluginClass.newInstance();
+            System.out.println(plugin.getClass().getSuperclass().getName());
+            Method initMethod = plugin.getClass().getSuperclass().getDeclaredMethod("init", PluginDescriptor.class);
+            initMethod.setAccessible(true);
+         //   plugin.getClass().getSuperclass().getDeclaredMethod("init", PluginDescriptor.class).invoke(pluginDescriptor);
+            initMethod.invoke(plugin, pluginDescriptor);
+
+     //       JavaPlugin plugin = (JavaPlugin) pluginClass.getSuperclass().getDeclaredConstructor(new Class[] {PluginDescriptor.class}).newInstance(pluginDescriptor);
+
+            this.pluginsList.add(jarClass);
+            this.plugins.put(file, plugin);
+            this.pluginsDescriptors.put(plugin, pluginDescriptor);
+
+            return plugin;
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -161,6 +185,10 @@ public class PluginManagerImpl implements PluginManager {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
             e.printStackTrace();
         } finally {
             if (loader != null) {
@@ -185,6 +213,8 @@ public class PluginManagerImpl implements PluginManager {
     public Collection<JavaPlugin> loadPlugins(Path path) throws FileNotFoundException {
         checkNotNull(path, "Directory cannot be null");
 
+        List<JavaPlugin> plugins = new ArrayList<>();
+
         if (!Files.exists(path)) {
             throw new FileNotFoundException("The given path doesn't exists");
         }
@@ -202,7 +232,7 @@ public class PluginManagerImpl implements PluginManager {
                     .forEach(
                             file -> {
                                 try {
-                                    loadPlugin(file.toFile());
+                                    plugins.add(loadPlugin(file.toFile()));
                                 } catch (InvalidPluginException e) {
                                     e.printStackTrace();
                                 }
@@ -211,7 +241,7 @@ public class PluginManagerImpl implements PluginManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return plugins;
     }
 
     @Override
@@ -231,7 +261,7 @@ public class PluginManagerImpl implements PluginManager {
 
     @Override
     public void enablePlugin(JavaPlugin plugin) {
-
+        plugin.onEnable();
     }
 
     @Override

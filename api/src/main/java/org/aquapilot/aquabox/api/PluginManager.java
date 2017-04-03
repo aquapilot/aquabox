@@ -70,6 +70,8 @@ public interface PluginManager {
 
     PluginDescriptor getPluginDescriptor(File file) throws InvalidPluginException;
 
+    PluginDescriptor getPluginDescriptor(JavaPlugin plugin);
+
     /**
      * Loads the plugin in the specified file
      * <p>

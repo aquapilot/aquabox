@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.modules.notifier.serices;
+package org.aquapilot.aquabox.server.modules.notifier.services;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;

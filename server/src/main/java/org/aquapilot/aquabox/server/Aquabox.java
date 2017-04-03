@@ -9,6 +9,7 @@
 
 package org.aquapilot.aquabox.server;
 
+import org.aquapilot.aquabox.api.PluginManager;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.common.SystemUtil;
@@ -16,7 +17,8 @@ import org.aquapilot.aquabox.server.common.asciiart.FigletFontAsciiArtConverter;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
-import org.aquapilot.aquabox.server.modules.notifier.serices.NotifierService;
+import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
+import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
 import org.aquapilot.aquabox.server.modules.sensors.SensorService;
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEvent;
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEvent;
@@ -46,20 +48,23 @@ public class Aquabox {
    private SensorService sensorService;
    private StorageService storageService;
    private NotifierService notifierService;
+   private PluginService pluginService;
 
    @Inject
-   public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
+   public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService, PluginService pluginService,
          NotifierService notifierService) {
 
       this.registerService(storageService);
       this.registerService(sensorService);
       this.registerService(gpioService);
       this.registerService(notifierService);
+      this.registerService(pluginService);
 
       // TODO not really beautifull code redundancy
       this.sensorService = sensorService;
       this.storageService = storageService;
       this.notifierService = notifierService;
+      this.pluginService = pluginService;
    }
 
    private void registerService(Service service) {
