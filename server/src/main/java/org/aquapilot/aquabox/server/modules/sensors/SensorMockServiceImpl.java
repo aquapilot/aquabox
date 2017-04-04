@@ -72,7 +72,6 @@ public class SensorMockServiceImpl implements SensorService {
          while (true) {
 
             TimeUnit.SECONDS.sleep(8);
-
             // generate random receptions
             for (SensorListener listener : this.listeners) {
 

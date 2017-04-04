@@ -264,7 +264,7 @@ public class PluginManagerImpl implements PluginManager {
 
     }
 
-   class EventRegistration {
+   public class EventRegistration {
 
       private AquaboxListener listener;
       private Method method;
@@ -277,6 +277,18 @@ public class PluginManagerImpl implements PluginManager {
          this.plugin = plugin;
       }
 
+      public JavaPlugin getPlugin(){
+          return this.plugin;
+      }
+
+      public AquaboxListener getListener(){
+          return this.listener;
+      }
+
+      public Method getMethod(){
+          return this.method;
+      }
+
    }
 
    private Map<Event, List<EventRegistration>> events = new HashMap<>();
@@ -284,7 +296,6 @@ public class PluginManagerImpl implements PluginManager {
     @Override
     public void registerEvents(AquaboxListener listener, JavaPlugin plugin) {
 
-       System.out.println(listener.toString());
        for (Method method : listener.getClass().getDeclaredMethods()) {
 
           if (method.isAnnotationPresent(org.aquapilot.aquabox.api.listener.Handler.class)

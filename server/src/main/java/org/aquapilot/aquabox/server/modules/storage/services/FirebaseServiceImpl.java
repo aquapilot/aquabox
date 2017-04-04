@@ -69,15 +69,15 @@ public class FirebaseServiceImpl implements StorageService {
    public void saveMeasure(String uuid, String newValue) {
 
       System.out.println("Save new measure");
-      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
-
-      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
-         if (databaseError != null) {
-            System.out.println("Data could not be saved " + databaseError.getMessage());
-         } else {
-            System.out.println("Data saved successfully.");
-         }
-      });
+//      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
+//
+//      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
+//         if (databaseError != null) {
+//            System.out.println("Data could not be saved " + databaseError.getMessage());
+//         } else {
+//            System.out.println("Data saved successfully.");
+//         }
+//      });
    }
 
    @Override

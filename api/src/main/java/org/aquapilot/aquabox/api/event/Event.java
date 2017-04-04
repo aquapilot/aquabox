@@ -14,6 +14,12 @@ public enum Event {
       this.clazz = clazz;
    }
 
+   public static Event valueOf(AquaboxEvent event){
+
+      return valueOf(event.getClass());
+
+   }
+
    public static Event valueOf(Class<? extends AquaboxEvent> clazz) {
 
       for (Event event : Event.values()) {

@@ -9,6 +9,10 @@
 
 package org.aquapilot.aquabox.server;
 
+import org.aquapilot.aquabox.api.PluginDescriptor;
+import org.aquapilot.aquabox.api.PluginManager;
+import org.aquapilot.aquabox.api.event.AquaboxEvent;
+import org.aquapilot.aquabox.api.event.Event;
 import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
 import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
@@ -19,6 +23,7 @@ import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
 import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
+import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
 import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
 import org.aquapilot.aquabox.server.modules.sensors.SensorService;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
@@ -27,8 +32,14 @@ import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * This class is the main class of Aquabox.
@@ -38,114 +49,158 @@ import java.util.Set;
 @Singleton
 public class Aquabox {
 
-   @Log
-   private Logger log;
+    @Log
+    private Logger log;
 
-   private boolean started = false;
-   private Set<Service> registeredServices = new HashSet<>();
+    private boolean started = false;
+    private Set<Service> registeredServices = new HashSet<>();
 
-   private SensorService sensorService;
-   private StorageService storageService;
-   private NotifierService notifierService;
-   private PluginService pluginService;
+    private SensorService sensorService;
+    private StorageService storageService;
+    private NotifierService notifierService;
+    private PluginService pluginService;
 
-   @Inject
-   public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService, PluginService pluginService,
-         NotifierService notifierService) {
+    @Inject
+    public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
+                            PluginService pluginService,
+                            NotifierService notifierService) {
 
-      this.registerService(storageService);
-      this.registerService(sensorService);
-      this.registerService(gpioService);
-      this.registerService(notifierService);
-      this.registerService(pluginService);
+        this.registerService(storageService);
+        this.registerService(sensorService);
+        this.registerService(gpioService);
+        this.registerService(notifierService);
+        this.registerService(pluginService);
 
-      // TODO not really beautifull code redundancy
-      this.sensorService = sensorService;
-      this.storageService = storageService;
-      this.notifierService = notifierService;
-      this.pluginService = pluginService;
-   }
+        // TODO not really beautifull code redundancy
+        this.sensorService = sensorService;
+        this.storageService = storageService;
+        this.notifierService = notifierService;
+        this.pluginService = pluginService;
+    }
 
-   private void registerService(Service service) {
+    private void registerService(Service service) {
 
-      this.registeredServices.add(service);
-   }
+        this.registeredServices.add(service);
+    }
 
-   /**
-    * Start the aquabox
-    */
-   public void start() {
+    /**
+     * Start the aquabox
+     */
+    public void start() {
 
-      if (this.started) {
-         this.log.warn("Could not start aquabox, it is already running.");
-         return;
-      }
+        if (this.started) {
+            this.log.warn("Could not start aquabox, it is already running.");
+            return;
+        }
 
-      init();
+        init();
 
-      this.started = true;
-      while (this.started) {
-         try {
-            Thread.sleep(3000);
-         } catch (InterruptedException e) {
-            this.log.warn("Aquabox thread was interrupted", e);
-            Thread.currentThread().interrupt();
-            this.started = false;
-         }
-      }
+        this.started = true;
+        while (this.started) {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                this.log.warn("Aquabox thread was interrupted", e);
+                Thread.currentThread().interrupt();
+                this.started = false;
+            }
+        }
 
-      stop(); // If we are here, it means the aquabox infinite loop is aborted so we stop the app
-   }
+        stop(); // If we are here, it means the aquabox infinite loop is aborted so we stop the app
+    }
 
-   /**
-    * Stop the aquabox
-    */
-   public void stop() {
+    /**
+     * Stop the aquabox
+     */
+    public void stop() {
 
-      this.started = false;
-      this.log.info("Stopping services ...");
-      for (Service service : this.registeredServices) {
-         service.stop();
-      }
-   }
+        this.started = false;
+        this.log.info("Stopping services ...");
+        for (Service service : this.registeredServices) {
+            service.stop();
+        }
+    }
 
-   private void init() {
+    private void init() {
 
-      new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
-      new SystemUtil().checkSystem();
+        new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
+        new SystemUtil().checkSystem();
 
-      try {
+        try {
 
-         this.log.info("Starting services ...");
-         for (Service service : this.registeredServices) {
-            service.start();
-         }
-
-         this.sensorService.registerListener(new SensorListener() {
-
-            @Override
-            public void onSensorValueChange(SensorValueChangeEvent event) {
-
-               Aquabox.this.log.debug(
-                     String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
-
-               Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
+            this.log.info("Starting services ...");
+            for (Service service : this.registeredServices) {
+                service.start();
             }
 
-            @Override
-            public void onNewSensorDetected(SensorDetectedEvent event) {
+            this.sensorService.registerListener(new SensorListener() {
 
-               Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
+                @Override
+                public void onSensorValueChange(SensorValueChangeEvent event) {
 
-               // Notify firebase
-               Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
-            }
-         });
+                    Aquabox.this.log.debug(
+                            String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
+                    handleEvent(event);
+                    Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
+                }
 
-      } catch (Exception exception) {
-         this.log.error("We applogize an unexpected error occured.", exception);
-      }
+                @Override
+                public void onNewSensorDetected(SensorDetectedEvent event) {
 
-   }
+                    Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
+
+                    // Notify firebase
+                    Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
+                }
+            });
+
+        } catch (Exception exception) {
+            this.log.error("We applogize an unexpected error occured.", exception);
+        }
+
+    }
+
+    private void handleEvent(AquaboxEvent event) {
+
+        System.out.println("CALL HANDLER METHOD");
+
+        // fire event to registered plugin listeners
+        Event ev = Event.valueOf(event);
+        Map<Event, List<PluginManagerImpl.EventRegistration>> registeredEvents = this.pluginService.getRegisteredEvents();
+        List<PluginManagerImpl.EventRegistration> methodsToCall = registeredEvents.get(ev);
+        for (PluginManagerImpl.EventRegistration registration : methodsToCall) {
+
+
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            executor.submit(() -> {
+
+                try {
+                    Method declaredMethod = registration
+                            .getListener()
+                            .getClass()
+                            .getDeclaredMethod(registration.getMethod().getName(), SensorValueChangeEvent.class);
+                    declaredMethod.invoke(registration.getListener(), event);
+
+
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            });
+//         try {
+//            registration.getListener().getClass().getDeclaredMethod(registration.getMethod().getName(), new Class[]{event.getClass()}).invoke(event);
+//         } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//         } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//         } catch (InvocationTargetException e) {
+//            e.printStackTrace();
+//         }
+
+        }
+    }
 
 }

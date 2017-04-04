@@ -9,8 +9,13 @@
 
 package org.aquapilot.aquabox.server.modules.plugins.service;
 
+import org.aquapilot.aquabox.api.event.Event;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
+import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * This class manage notifications
@@ -18,5 +23,7 @@ import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNoti
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public interface PluginService extends Service {
+
+    Map<Event, List<PluginManagerImpl.EventRegistration>> getRegisteredEvents();
 
 }
