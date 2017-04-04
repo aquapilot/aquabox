@@ -10,12 +10,12 @@
 package org.aquapilot.aquabox.server.modules.sensors;
 
 import com.pi4j.io.spi.SpiDevice;
+import org.aquapilot.aquabox.api.event.SensorBatteryStatusEvent;
+import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
+import org.aquapilot.aquabox.api.event.SensorUnreachableEvent;
+import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorBatteryStatusEvent;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEvent;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorUnreachableEvent;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.slf4j.Logger;
 

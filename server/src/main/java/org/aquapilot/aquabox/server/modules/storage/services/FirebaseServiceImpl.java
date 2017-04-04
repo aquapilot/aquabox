@@ -83,7 +83,7 @@ public class FirebaseServiceImpl implements StorageService {
    @Override
    public void start() throws Exception {
 
-      this.log.debug(">>> Start Firebase service storage");
+      this.log.debug(">> Start Firebase service storage");
 
       // TODO: should read settings
       String dbName = this.settings.getDatabaseName();
@@ -104,6 +104,6 @@ public class FirebaseServiceImpl implements StorageService {
    @Override
    public void stop() {
 
-      this.log.debug(">>> Firebase service storage stopped");
+      this.log.debug(">> Firebase service storage stopped");
    }
 }

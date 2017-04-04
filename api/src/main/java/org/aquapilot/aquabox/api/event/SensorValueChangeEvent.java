@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.server.modules.sensors.event;
+package org.aquapilot.aquabox.api.event;
 
 import javax.annotation.Generated;
 
@@ -16,7 +16,7 @@ import javax.annotation.Generated;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class SensorValueChangeEvent {
+public class SensorValueChangeEvent implements AquaboxEvent {
 
    private final String UUID;
    private final String oldValue;

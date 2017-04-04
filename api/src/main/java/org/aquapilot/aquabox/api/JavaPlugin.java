@@ -20,6 +20,7 @@ public abstract class JavaPlugin {
    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
    private PluginDescriptor descriptor;
+   private PluginManager pluginManager;
 
    public JavaPlugin(){}
 
@@ -27,8 +28,9 @@ public abstract class JavaPlugin {
 //       this.descriptor = descriptor;
 //   }
 
-    protected void init(PluginDescriptor descriptor){
+   protected void init(PluginDescriptor descriptor, PluginManager pluginManager) {
        this.descriptor = descriptor;
+      this.pluginManager = pluginManager;
     }
 
     public abstract void onEnable();
@@ -36,9 +38,13 @@ public abstract class JavaPlugin {
     public abstract void onDisable();
 
     public Logger getLogger() {
-
        return LOGGER;
     }
+
+   public PluginManager getPluginManager() {
+
+      return this.pluginManager;
+   }
 
     public PluginDescriptor getPluginDescriptor() {
         return descriptor;

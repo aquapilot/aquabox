@@ -62,13 +62,13 @@ public class NotifierFirebaseServiceImpl implements NotifierService {
                .build();
          FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
       }
-      this.log.debug(">>> FirebaseNotifier service started");
+      this.log.debug(">> FirebaseNotifier service started");
    }
 
    @Override
    public void stop() {
 
-      this.log.debug(">>> Firebase service notifier stopped");
+      this.log.debug(">> Firebase service notifier stopped");
    }
 
    @Override

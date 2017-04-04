@@ -9,7 +9,8 @@
 
 package org.aquapilot.aquabox.server;
 
-import org.aquapilot.aquabox.api.PluginManager;
+import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
+import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.common.SystemUtil;
@@ -20,8 +21,6 @@ import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNoti
 import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
 import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
 import org.aquapilot.aquabox.server.modules.sensors.SensorService;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEvent;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.aquapilot.aquabox.server.modules.storage.services.StorageService;
 import org.slf4j.Logger;

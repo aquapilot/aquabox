@@ -12,18 +12,19 @@ package org.aquapilot.aquabox.server.modules.plugins.manager;
 import org.aquapilot.aquabox.api.JavaPlugin;
 import org.aquapilot.aquabox.api.PluginDescriptor;
 import org.aquapilot.aquabox.api.PluginManager;
+import org.aquapilot.aquabox.api.event.AquaboxEvent;
+import org.aquapilot.aquabox.api.event.Event;
 import org.aquapilot.aquabox.api.exception.InvalidPluginException;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
 import org.ini4j.Ini;
-import sun.plugin2.main.server.Plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -32,6 +33,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,7 +141,8 @@ public class PluginManagerImpl implements PluginManager {
 
         try {
             // Load jar in memory
-            loader = new URLClassLoader(new URL[]{file.toURL()});
+           loader = new URLClassLoader(new URL[] { file.toURL() });
+
             jar = new JarFile(file.getAbsolutePath());
             String mainClassString = mainClass.replace(".", "/") + ".class";
             JarEntry entry = jar.getJarEntry(mainClassString);
@@ -147,9 +150,20 @@ public class PluginManagerImpl implements PluginManager {
                 throw new InvalidPluginException("The declared main file doesnt exists !");
             }
 
+           Enumeration<JarEntry> entries = jar.entries();
+
+           // Need this else we only load the main class and not related other classes (todo find an elegant solution)
+           while (entries.hasMoreElements()) {
+
+              JarEntry current = entries.nextElement();
+              if (current.toString().endsWith(".class")) {
+                 Class.forName(current.toString().replace("/", ".").replace(".class", ""), true, loader);
+              }
+
+           }
 
             Class jarClass = Class.forName(mainClass, true, loader);
-
+           //   Class anotherclass = Class.forName("com.foo.SensorListener", true, loader);
 
             Class<? extends JavaPlugin> pluginClass;
             try {
@@ -158,18 +172,14 @@ public class PluginManagerImpl implements PluginManager {
                 throw new InvalidPluginException("main class `" + pluginDescriptor.getMainClass() + "' does not extend JavaPlugin");
             }
 
-//            NewInstanceWithReflection object = (NewInstanceWithReflection)Class.forName("NewInstanceWithReflection").newInstance();
-//            Constructor constructor = NewInstanceWithReflection.class.getDeclaredConstructor( new Class[] {String.class});
-//            NewInstanceWithReflection object1 = (NewInstanceWithReflection)constructor.newInstance(new Object[]{"StackOverFlow"});
-
             JavaPlugin plugin = pluginClass.newInstance();
-            System.out.println(plugin.getClass().getSuperclass().getName());
-            Method initMethod = plugin.getClass().getSuperclass().getDeclaredMethod("init", PluginDescriptor.class);
+           Method initMethod = plugin
+                 .getClass()
+                 .getSuperclass()
+                 .getDeclaredMethod("init", PluginDescriptor.class, PluginManager.class);
             initMethod.setAccessible(true);
-         //   plugin.getClass().getSuperclass().getDeclaredMethod("init", PluginDescriptor.class).invoke(pluginDescriptor);
-            initMethod.invoke(plugin, pluginDescriptor);
+           initMethod.invoke(plugin, pluginDescriptor, this);
 
-     //       JavaPlugin plugin = (JavaPlugin) pluginClass.getSuperclass().getDeclaredConstructor(new Class[] {PluginDescriptor.class}).newInstance(pluginDescriptor);
 
             this.pluginsList.add(jarClass);
             this.plugins.put(file, plugin);
@@ -254,10 +264,50 @@ public class PluginManagerImpl implements PluginManager {
 
     }
 
+   class EventRegistration {
+
+      private AquaboxListener listener;
+      private Method method;
+      private JavaPlugin plugin;
+
+      public EventRegistration(AquaboxListener listener, Method method, JavaPlugin plugin) {
+
+         this.listener = listener;
+         this.method = method;
+         this.plugin = plugin;
+      }
+
+   }
+
+   private Map<Event, List<EventRegistration>> events = new HashMap<>();
+
     @Override
     public void registerEvents(AquaboxListener listener, JavaPlugin plugin) {
 
+       System.out.println(listener.toString());
+       for (Method method : listener.getClass().getDeclaredMethods()) {
+
+          if (method.isAnnotationPresent(org.aquapilot.aquabox.api.listener.Handler.class)
+                && method.getParameterCount() == 1) {
+             Parameter[] parameters = method.getParameters();
+             Class<?> type = (Class<? extends Event>) parameters[0].getType();
+             Event event = Event.valueOf((Class<? extends AquaboxEvent>) type);
+
+             if (!events.containsKey(event)) {
+                events.put(event, new ArrayList<>());
+             }
+
+             events.get(event).add(new EventRegistration(listener, method, plugin));
+
+             System.out.println(type.getName());
+          }
+       }
     }
+
+   public Map<Event, List<EventRegistration>> getRegisteredEvents() {
+
+      return this.events;
+   }
 
     @Override
     public void enablePlugin(JavaPlugin plugin) {

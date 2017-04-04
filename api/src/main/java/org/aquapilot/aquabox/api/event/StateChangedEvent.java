@@ -17,7 +17,7 @@ import org.aquapilot.aquabox.api.PinState;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public interface StateChangedEvent {
+public interface StateChangedEvent extends AquaboxEvent {
     PinState getOldState();
 
     PinState getNewState();

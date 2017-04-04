@@ -9,15 +9,11 @@
 
 package org.aquapilot.aquabox.api.listener;
 
-import org.aquapilot.aquabox.api.event.StateChangedEvent;
-
 /**
  * This class TODO
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public interface AquaboxListener {
-
-    default void onPinStateChanged(StateChangedEvent event){}
 
 }
