@@ -162,8 +162,6 @@ public class Aquabox {
 
     private void handleEvent(AquaboxEvent event) {
 
-        System.out.println("CALL HANDLER METHOD");
-
         // fire event to registered plugin listeners
         Event ev = Event.valueOf(event);
         Map<Event, List<PluginManagerImpl.EventRegistration>> registeredEvents = this.pluginService.getRegisteredEvents();
@@ -178,10 +176,8 @@ public class Aquabox {
                     Method declaredMethod = registration
                             .getListener()
                             .getClass()
-                            .getDeclaredMethod(registration.getMethod().getName(), SensorValueChangeEvent.class);
+                            .getDeclaredMethod(registration.getMethod().getName(), ev.getAssociatedClass());
                     declaredMethod.invoke(registration.getListener(), event);
-
-
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -190,16 +186,6 @@ public class Aquabox {
                     e.printStackTrace();
                 }
             });
-//         try {
-//            registration.getListener().getClass().getDeclaredMethod(registration.getMethod().getName(), new Class[]{event.getClass()}).invoke(event);
-//         } catch (NoSuchMethodException e) {
-//            e.printStackTrace();
-//         } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//         } catch (InvocationTargetException e) {
-//            e.printStackTrace();
-//         }
-
         }
     }
 
