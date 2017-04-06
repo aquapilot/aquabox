@@ -10,6 +10,8 @@
 package org.aquapilot.aquabox.server.modules.gpio.listener;
 
 import org.aquapilot.aquabox.api.event.gpio.PinStateChangedEvent;
+import org.aquapilot.aquabox.api.event.gpio.PinStateHighEvent;
+import org.aquapilot.aquabox.api.event.gpio.PinStateLowEvent;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
 
 /**
