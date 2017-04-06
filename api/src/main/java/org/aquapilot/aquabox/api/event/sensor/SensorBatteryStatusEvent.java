@@ -7,13 +7,20 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api;
+package org.aquapilot.aquabox.api.event.sensor;
 
 /**
- * This enum declare the states that a pin can have.
+ * Event fired when a sensor notify the aquabox about its battery life status.
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum PinState {
-   HIGH, LOW
+public interface SensorBatteryStatusEvent extends SensorEvent {
+
+   /**
+    * Return the concerned sensor unique id
+    *
+    * @return
+    */
+   String getUUID();
+
 }

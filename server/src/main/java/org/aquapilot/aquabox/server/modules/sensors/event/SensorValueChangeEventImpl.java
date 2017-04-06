@@ -7,7 +7,9 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api.event;
+package org.aquapilot.aquabox.server.modules.sensors.event;
+
+import org.aquapilot.aquabox.api.event.sensor.SensorValueChangeEvent;
 
 import javax.annotation.Generated;
 
@@ -16,13 +18,13 @@ import javax.annotation.Generated;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class SensorValueChangeEvent implements AquaboxEvent {
+public class SensorValueChangeEventImpl implements SensorValueChangeEvent {
 
    private final String UUID;
    private final String oldValue;
    private final String newValue;
 
-   private SensorValueChangeEvent(String UUID, String oldValue, String newValue) {
+   private SensorValueChangeEventImpl(String UUID, String oldValue, String newValue) {
 
       this.UUID = UUID;
       this.oldValue = oldValue;
@@ -34,16 +36,19 @@ public class SensorValueChangeEvent implements AquaboxEvent {
       return new Builder();
    }
 
+   @Override
    public String getUUID() {
 
       return this.UUID;
    }
 
+   @Override
    public String getOldValue() {
 
       return this.oldValue;
    }
 
+   @Override
    public String getNewValue() {
 
       return this.newValue;
@@ -70,7 +75,7 @@ public class SensorValueChangeEvent implements AquaboxEvent {
    @Generated(value = "Step Builder Generator Plugin")
    public interface FinalStep {
 
-      SensorValueChangeEvent build();
+      SensorValueChangeEventImpl build();
    }
 
    @Generated(value = "Step Builder Generator Plugin")
@@ -98,9 +103,9 @@ public class SensorValueChangeEvent implements AquaboxEvent {
          return this;
       }
 
-      public SensorValueChangeEvent build() {
+      public SensorValueChangeEventImpl build() {
 
-         SensorValueChangeEvent theObject = new SensorValueChangeEvent(UUID, oldValue, newValue);
+         SensorValueChangeEventImpl theObject = new SensorValueChangeEventImpl(UUID, oldValue, newValue);
          return theObject;
       }
    }

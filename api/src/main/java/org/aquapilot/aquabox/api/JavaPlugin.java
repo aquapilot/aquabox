@@ -13,40 +13,75 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by vermeille on 31.03.2017.
+ * This class is inherited by plugins and provide a good starting point with access to global logger, plugin
+ * informations and so on.
+ *
+ * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public abstract class JavaPlugin {
 
-   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+   private static final Logger LOGGER = LoggerFactory.getLogger(JavaPlugin.class);
 
    private PluginDescriptor descriptor;
    private PluginManager pluginManager;
 
-   public JavaPlugin(){}
+   public JavaPlugin() {
 
-//   public JavaPlugin(PluginDescriptor descriptor){
-//       this.descriptor = descriptor;
-//   }
+   }
 
-   protected void init(PluginDescriptor descriptor, PluginManager pluginManager) {
-       this.descriptor = descriptor;
+   /**
+    * Init the plugin with usefull inputs. This method is called internally by the plugin manager. You shouldn't play
+    * with it.
+    * TODO: move this logic into a private constructor so that in one step the whole thing is done
+    *
+    * @param descriptor
+    * @param pluginManager
+    */
+   protected void init(final PluginDescriptor descriptor, final PluginManager pluginManager) {
+
+      this.descriptor = descriptor;
       this.pluginManager = pluginManager;
-    }
+   }
 
-    public abstract void onEnable();
+   /**
+    * Method called when the plugin is enabled by the aquabox
+    */
+   public abstract void onEnable();
 
-    public abstract void onDisable();
+   /**
+    * Method called when the plugin is disabled by the aquabox
+    */
+   public abstract void onDisable();
 
-    public Logger getLogger() {
-       return LOGGER;
-    }
+   /**
+    * Get the global logger used by the aquabox. This allow you to log informations direct in the aquabox log file.
+    * <p>Note: Using this logger is recommended in most case because it simplify the errors analysis.</p>
+    *
+    * @return
+    */
+   public Logger getLogger() {
 
+      return LOGGER;
+   }
+
+   /**
+    * Get all informations declared in the plugin.ini file of the current plugin.
+    *
+    * @return
+    */
+   public PluginDescriptor getPluginDescriptor() {
+
+      return this.descriptor;
+   }
+
+   /**
+    * Get the plugin manager
+    * <p>Example: you can register your listeners with {@link #getPluginManager()}</p>
+    *
+    * @return
+    */
    public PluginManager getPluginManager() {
 
       return this.pluginManager;
    }
-
-    public PluginDescriptor getPluginDescriptor() {
-        return descriptor;
-    }
 }

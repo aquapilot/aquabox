@@ -9,12 +9,8 @@
 
 package org.aquapilot.aquabox.server;
 
-import org.aquapilot.aquabox.api.PluginDescriptor;
-import org.aquapilot.aquabox.api.PluginManager;
 import org.aquapilot.aquabox.api.event.AquaboxEvent;
 import org.aquapilot.aquabox.api.event.Event;
-import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
-import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.common.SystemUtil;
@@ -26,6 +22,8 @@ import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
 import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
 import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
 import org.aquapilot.aquabox.server.modules.sensors.SensorService;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEventImpl;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.aquapilot.aquabox.server.modules.storage.services.StorageService;
 import org.slf4j.Logger;
@@ -136,7 +134,7 @@ public class Aquabox {
             this.sensorService.registerListener(new SensorListener() {
 
                 @Override
-                public void onSensorValueChange(SensorValueChangeEvent event) {
+                public void onSensorValueChange(SensorValueChangeEventImpl event) {
 
                     Aquabox.this.log.debug(
                             String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
@@ -145,7 +143,7 @@ public class Aquabox {
                 }
 
                 @Override
-                public void onNewSensorDetected(SensorDetectedEvent event) {
+                public void onNewSensorDetected(SensorDetectedEventImpl event) {
 
                     Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
 

@@ -9,8 +9,8 @@
 
 package org.aquapilot.aquabox.server.modules.gpio.listener;
 
+import org.aquapilot.aquabox.api.event.gpio.PinStateChangedEvent;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
-import org.aquapilot.aquabox.api.event.StateChangedEvent;
 
 /**
  * This class is intended to provide async call when something occurs on the selected pins
@@ -19,19 +19,19 @@ import org.aquapilot.aquabox.api.event.StateChangedEvent;
  */
 public interface GPIOPinStateListener extends AquaboxListener {
 
-    /**
-     * Called when a pin changed state
-     *
-     * @param event
-     */
-    void onPinStateChanged(StateChangedEvent event);
+   /**
+    * Called when a pin changed state
+    *
+    * @param event
+    */
+   void onPinStateChanged(PinStateChangedEvent event);
 
-    default void onPinStateHigh() {
+   default void onPinStateHigh(PinStateHighEvent event) {
 
-    }
+   }
 
-    default void onPinStateLow() {
+   default void onPinStateLow(PinStateLowEvent event) {
 
-    }
+   }
 
 }

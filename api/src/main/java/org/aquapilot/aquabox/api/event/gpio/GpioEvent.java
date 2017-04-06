@@ -6,14 +6,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+package org.aquapilot.aquabox.api.event.gpio;
 
-package org.aquapilot.aquabox.api;
+import org.aquapilot.aquabox.api.event.AquaboxEvent;
 
 /**
- * This enum declare the states that a pin can have.
+ * This interface must be implemented by every event related to GPIO
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum PinState {
-   HIGH, LOW
+public interface GpioEvent extends AquaboxEvent {
+
 }

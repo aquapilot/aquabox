@@ -7,20 +7,22 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api.event;
+package org.aquapilot.aquabox.api.event.gpio;
 
 import com.pi4j.io.gpio.Pin;
-import org.aquapilot.aquabox.api.PinState;
 
 /**
- * This class TODO
+ * Event fired when a GPIO pin state changed from low to high.
+ * <p>Note: it should be a registred pin else the aquabox will not care about it.</p>
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public interface StateChangedEvent extends AquaboxEvent {
-    PinState getOldState();
+public interface PinStateHighEvent extends GpioEvent {
 
-    PinState getNewState();
-
-    Pin getPin();
+   /**
+    * Return the pin that have a new state
+    *
+    * @return
+    */
+   Pin getPin();
 }

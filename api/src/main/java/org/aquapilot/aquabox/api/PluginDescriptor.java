@@ -12,112 +12,130 @@ package org.aquapilot.aquabox.api;
 import javax.annotation.Generated;
 
 /**
- * This class TODO
+ * This class represent a parsed plugin.ini file.
+ * <p>FYI Each plugin should contains a plugin.ini file at root. <br>
+ * It declare some informations like author, plugin name, version and so on</p>
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public class PluginDescriptor {
 
-    private final String name; // Required
-    private final String version; // Required
-    private final String mainClass; // Required
-    private String description; // Optional
-    private String author; // Optional
+   private final String name; // Required
+   private final String version; // Required
+   private final String mainClass; // Required
+   private String description; // Optional
+   private String author; // Optional
 
-    private PluginDescriptor(String name, String version, String mainClass) {
-        this.name = name;
-        this.version = version;
-        this.mainClass = mainClass;
-    }
+   private PluginDescriptor(String name, String version, String mainClass) {
 
-    public static NameStep newInstance() {
-        return new Builder();
-    }
+      this.name = name;
+      this.version = version;
+      this.mainClass = mainClass;
+   }
 
-    public String getName() {
-        return name;
-    }
+   public static NameStep newInstance() {
 
-    public String getVersion() {
-        return version;
-    }
+      return new Builder();
+   }
 
-    public String getMainClass() {
-        return mainClass;
-    }
+   public String getName() {
 
-    public String getDescription() {
-        return description;
-    }
+      return this.name;
+   }
 
-    public String getAuthor() {
-        return author;
-    }
+   public String getVersion() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface NameStep {
-        VersionStep name(String name);
-    }
+      return this.version;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface VersionStep {
-        MainClassStep version(String version);
-    }
+   public String getMainClass() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface MainClassStep {
-        FinalStep mainClass(String mainClass);
-    }
+      return this.mainClass;
+   }
 
-    @Generated(value = "Step Builder Generator Plugin")
-    public interface FinalStep {
-        PluginDescriptor build();
+   public String getDescription() {
 
-        FinalStep description(String description);
+      return this.description;
+   }
 
-        FinalStep author(String author);
-    }
+   public String getAuthor() {
 
-    @Generated(value = "Step Builder Generator Plugin")
-    private static final class Builder implements NameStep, VersionStep, MainClassStep, FinalStep {
-        private String name;
-        private String version;
-        private String mainClass;
-        private String description;
-        private String author;
+      return this.author;
+   }
 
-        public VersionStep name(String name) {
-            this.name = name;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface NameStep {
 
-        public MainClassStep version(String version) {
-            this.version = version;
-            return this;
-        }
+      VersionStep name(String name);
+   }
 
-        public FinalStep mainClass(String mainClass) {
-            this.mainClass = mainClass;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface VersionStep {
 
-        public FinalStep description(String description) {
-            this.description = description;
-            return this;
-        }
+      MainClassStep version(String version);
+   }
 
-        public FinalStep author(String author) {
-            this.author = author;
-            return this;
-        }
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface MainClassStep {
 
-        public PluginDescriptor build() {
-            PluginDescriptor theObject = new PluginDescriptor(name, version, mainClass);
-            theObject.description = description;
-            theObject.author = author;
-            return theObject;
-        }
-    }
-    // private final List dependencies
+      FinalStep mainClass(String mainClass);
+   }
 
+   @Generated(value = "Step Builder Generator Plugin")
+   public interface FinalStep {
+
+      PluginDescriptor build();
+
+      FinalStep description(String description);
+
+      FinalStep author(String author);
+   }
+
+   @Generated(value = "Step Builder Generator Plugin")
+   private static final class Builder implements NameStep, VersionStep, MainClassStep, FinalStep {
+
+      private String name;
+      private String version;
+      private String mainClass;
+      private String description;
+      private String author;
+
+      public VersionStep name(String name) {
+
+         this.name = name;
+         return this;
+      }
+
+      public MainClassStep version(String version) {
+
+         this.version = version;
+         return this;
+      }
+
+      public FinalStep mainClass(String mainClass) {
+
+         this.mainClass = mainClass;
+         return this;
+      }
+
+      public FinalStep description(String description) {
+
+         this.description = description;
+         return this;
+      }
+
+      public FinalStep author(String author) {
+
+         this.author = author;
+         return this;
+      }
+
+      public PluginDescriptor build() {
+
+         PluginDescriptor theObject = new PluginDescriptor(name, version, mainClass);
+         theObject.description = description;
+         theObject.author = author;
+         return theObject;
+      }
+   }
 }
