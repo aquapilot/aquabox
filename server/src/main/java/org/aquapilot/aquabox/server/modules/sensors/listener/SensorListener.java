@@ -9,10 +9,10 @@
 
 package org.aquapilot.aquabox.server.modules.sensors.listener;
 
-import org.aquapilot.aquabox.api.event.SensorBatteryStatusEvent;
-import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
-import org.aquapilot.aquabox.api.event.SensorUnreachableEvent;
-import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorBatteryStatusEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorUnreachableEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEventImpl;
 
 /**
  * This class TODO
@@ -26,14 +26,14 @@ public interface SensorListener {
     *
     * @param event
     */
-   void onSensorValueChange(SensorValueChangeEvent event);
+   void onSensorValueChange(SensorValueChangeEventImpl event);
 
    /**
     * Called when a sensor sent its battery status
     *
     * @param event
     */
-   default void onSensorSendBatteryStatus(SensorBatteryStatusEvent event) {
+   default void onSensorSendBatteryStatus(SensorBatteryStatusEventImpl event) {
 
    }
 
@@ -42,7 +42,7 @@ public interface SensorListener {
     *
     * @param event
     */
-   default void onNewSensorDetected(SensorDetectedEvent event) {
+   default void onNewSensorDetected(SensorDetectedEventImpl event) {
 
    }
 
@@ -51,7 +51,7 @@ public interface SensorListener {
     *
     * @param event
     */
-   default void onSensorUnreachable(SensorUnreachableEvent event) {
+   default void onSensorUnreachable(SensorUnreachableEventImpl event) {
 
    }
 

@@ -7,7 +7,9 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api.event;
+package org.aquapilot.aquabox.server.modules.sensors.event;
+
+import org.aquapilot.aquabox.api.event.sensor.SensorDetectedEvent;
 
 import javax.annotation.Generated;
 
@@ -16,11 +18,11 @@ import javax.annotation.Generated;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class SensorUnreachableEvent {
+public class SensorDetectedEventImpl implements SensorDetectedEvent {
 
    private final String UUID;
 
-   private SensorUnreachableEvent(String UUID) {
+   private SensorDetectedEventImpl(String UUID) {
 
       this.UUID = UUID;
    }
@@ -44,7 +46,7 @@ public class SensorUnreachableEvent {
    @Generated(value = "Step Builder Generator Plugin")
    public interface FinalStep {
 
-      SensorUnreachableEvent build();
+      SensorDetectedEventImpl build();
    }
 
    @Generated(value = "Step Builder Generator Plugin")
@@ -58,9 +60,9 @@ public class SensorUnreachableEvent {
          return this;
       }
 
-      public SensorUnreachableEvent build() {
+      public SensorDetectedEventImpl build() {
 
-         SensorUnreachableEvent theObject = new SensorUnreachableEvent(UUID);
+         SensorDetectedEventImpl theObject = new SensorDetectedEventImpl(UUID);
          return theObject;
       }
    }

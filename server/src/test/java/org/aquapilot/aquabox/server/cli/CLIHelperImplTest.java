@@ -12,6 +12,7 @@ package org.aquapilot.aquabox.server.cli;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -98,6 +99,19 @@ public class CLIHelperImplTest {
    }
 
    @Test
+   public void showHelp_shouldPreventServerProcessToStart_whenCalled() {
+
+      // Given
+      String[] args = new String[] { "-h" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(false, cliHelper.isAppAllowedToStart());
+   }
+
+   @Test
    public void showVersion_shouldBeCalled_whenRequestedWithVersionFlag() throws Exception {
 
       // Given
@@ -121,6 +135,19 @@ public class CLIHelperImplTest {
 
       // Then
       verify(cliHelper, times(1)).showVersion();
+   }
+
+   @Test
+   public void showVersion_shouldPreventServerProcessToStart_whenCalled() {
+
+      // Given
+      String[] args = new String[] { "-v" };
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(false, cliHelper.isAppAllowedToStart());
    }
 
    @Test
@@ -160,6 +187,35 @@ public class CLIHelperImplTest {
 
       // Then
       verify(cliHelper, never()).enableDebug();
+   }
+
+   @Test
+   public void enableDebug_shouldNotChangeAnythingAboutServerAllowedToStartOrNot_whenCalled() {
+
+      // Given
+      String[] args = new String[] { "--debug" };
+      boolean initialState = cliHelper.isAppAllowedToStart();
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(initialState, cliHelper.isAppAllowedToStart());
+
+   }
+
+   @Test
+   public void enableDebug_shouldNotChangeAnythingAboutServerAllowedToStartOrNot_variant_whenCalled() {
+
+      // Given
+      String[] args = new String[] { "--v --debug" }; // Version prevent app to start
+
+      // When
+      cliHelper.parseArguments(args);
+
+      // Then
+      assertEquals(false, cliHelper.isAppAllowedToStart());
+
    }
 
 }

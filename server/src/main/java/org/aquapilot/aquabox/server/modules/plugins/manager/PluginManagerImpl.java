@@ -37,6 +37,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -49,220 +50,268 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class PluginManagerImpl implements PluginManager {
 
-    private Map<File, JavaPlugin> plugins = new HashMap<>();
+   private Map<File, JavaPlugin> plugins = new HashMap<>();
 
-    private List<Class> pluginsList = new ArrayList<Class>();
-    private Map<JavaPlugin, PluginDescriptor> pluginsDescriptors = new HashMap<>();
+   private List<Class> pluginsList = new ArrayList<>();
+   private Map<JavaPlugin, PluginDescriptor> pluginsDescriptors = new HashMap<>();
+   private Map<Event, List<EventRegistration>> events = new HashMap<>();
 
-    @Override
-    public JavaPlugin getPlugin(String name) {
-        return null;
-    }
+   @Override
+   public Optional<JavaPlugin> getPlugin(String name) {
+      // TODO implement it
+      return Optional.empty();
+   }
 
-    @Override
-    public Collection<JavaPlugin> getPlugins() {
-        return plugins.values();
-    }
+   @Override
+   public Collection<JavaPlugin> getPlugins() {
 
-    @Override
-    public boolean isPluginEnabled(String name) {
-        return false;
-    }
+      return this.plugins.values();
+   }
 
-    @Override
-    public boolean isPluginEnabled(JavaPlugin plugin) {
-        return false;
-    }
+   @Override
+   public boolean isPluginEnabled(String name) {
 
-    public  PluginDescriptor getPluginDescriptor(JavaPlugin plugin){
-        return this.pluginsDescriptors.get(plugin);
-    }
+      return false;
+   }
 
-    @Override
-    public PluginDescriptor getPluginDescriptor(File file) throws InvalidPluginException {
-        checkNotNull(file, "File cannot be null");
+   @Override
+   public boolean isPluginEnabled(JavaPlugin plugin) {
 
-        JarFile jar = null;
-        InputStream stream = null;
+      return false;
+   }
 
-        // Load jar in memory
-        try {
-            jar = new JarFile(file.getAbsolutePath());
-            JarEntry entry = jar.getJarEntry("plugin.ini");
-            if (entry == null) {
-                throw new InvalidPluginException("This plugin doesnt contains any plugin.ini at root !");
+   @Override
+   public PluginDescriptor getPluginDescriptor(JavaPlugin plugin) {
+
+      return this.pluginsDescriptors.get(plugin);
+   }
+
+   @Override
+   public PluginDescriptor getPluginDescriptor(File file) throws InvalidPluginException {
+
+      checkNotNull(file, "File cannot be null");
+
+      JarFile jar = null;
+      InputStream stream = null;
+
+      // Load jar in memory
+      try {
+         jar = new JarFile(file.getAbsolutePath());
+         JarEntry entry = jar.getJarEntry("plugin.ini");
+         if (entry == null) {
+            throw new InvalidPluginException("This plugin doesnt contains any plugin.ini at root !");
+         }
+
+         stream = jar.getInputStream(entry);
+
+         Ini ini = new Ini();
+         ini.load(stream);
+
+         Ini.Section informationsSection = ini.get("informations");
+         String pluginName = informationsSection.get("name");
+         String pluginDescription = informationsSection.get("description");
+         String pluginAuthor = informationsSection.get("author");
+         String pluginVersion = informationsSection.get("version");
+         String pluginMainClass = informationsSection.get("mainClass");
+
+         return PluginDescriptor
+               .newInstance()
+               .name(pluginName)
+               .version(pluginVersion)
+               .mainClass(pluginMainClass)
+               .author(pluginAuthor)
+               .description(pluginDescription)
+               .build();
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
+         try {
+            jar.close();
+         } catch (IOException e) {
+            e.printStackTrace();
+         }
+      }
+      return null;
+   }
+
+   @Override
+   public JavaPlugin loadPlugin(File file) throws InvalidPluginException {
+
+      checkNotNull(file, "File cannot be null");
+
+      if (!file.exists()) {
+         throw new InvalidPluginException(new FileNotFoundException(file.getPath() + " does not exist"));
+      }
+
+      final PluginDescriptor pluginDescriptor = getPluginDescriptor(file);
+
+      String mainClass = pluginDescriptor.getMainClass();
+      URLClassLoader loader = null;
+      JarFile jar = null;
+
+      try {
+         // Load jar in memory
+         loader = new URLClassLoader(new URL[] { file.toURL() });
+
+         jar = new JarFile(file.getAbsolutePath());
+         String mainClassString = mainClass.replace(".", "/") + ".class";
+         JarEntry entry = jar.getJarEntry(mainClassString);
+         if (entry == null) {
+            throw new InvalidPluginException("The declared main file doesnt exists !");
+         }
+
+         Enumeration<JarEntry> entries = jar.entries();
+
+         // Need this else we only load the main class and not related other classes (todo find an elegant solution)
+         while (entries.hasMoreElements()) {
+
+            JarEntry current = entries.nextElement();
+            if (current.toString().endsWith(".class")) {
+               Class.forName(current.toString().replace("/", ".").replace(".class", ""), true, loader);
             }
 
-            stream = jar.getInputStream(entry);
+         }
 
-            Ini ini = new Ini();
-            ini.load(stream);
+         Class jarClass = Class.forName(mainClass, true, loader);
+         //   Class anotherclass = Class.forName("com.foo.SensorListener", true, loader);
 
-            Ini.Section informationsSection = ini.get("informations");
-            String pluginName = informationsSection.get("name");
-            String pluginDescription = informationsSection.get("description");
-            String pluginAuthor = informationsSection.get("author");
-            String pluginVersion = informationsSection.get("version");
-            String pluginMainClass = informationsSection.get("mainClass");
+         Class<? extends JavaPlugin> pluginClass;
+         try {
+            pluginClass = jarClass.asSubclass(JavaPlugin.class);
+         } catch (ClassCastException ex) {
+            throw new InvalidPluginException(
+                  "main class `" + pluginDescriptor.getMainClass() + "' does not extend JavaPlugin");
+         }
 
-            return PluginDescriptor.newInstance()
-                    .name(pluginName)
-                    .version(pluginVersion)
-                    .mainClass(pluginMainClass)
-                    .author(pluginAuthor)
-                    .description(pluginDescription)
-                    .build();
+         JavaPlugin plugin = pluginClass.newInstance();
+         Method initMethod = plugin
+               .getClass()
+               .getSuperclass()
+               .getDeclaredMethod("init", PluginDescriptor.class, PluginManager.class);
+         initMethod.setAccessible(true);
+         initMethod.invoke(plugin, pluginDescriptor, this);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+         this.pluginsList.add(jarClass);
+         this.plugins.put(file, plugin);
+         this.pluginsDescriptors.put(plugin, pluginDescriptor);
+
+         return plugin;
+      } catch (MalformedURLException e) {
+         e.printStackTrace();
+      } catch (IOException e) {
+         e.printStackTrace();
+      } catch (ClassNotFoundException e) {
+         e.printStackTrace();
+      } catch (IllegalAccessException e) {
+         e.printStackTrace();
+      } catch (InstantiationException e) {
+         e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+         e.printStackTrace();
+      } catch (InvocationTargetException e) {
+         e.printStackTrace();
+      } finally {
+         if (loader != null) {
             try {
-                jar.close();
+               loader.close();
             } catch (IOException e) {
-                e.printStackTrace();
+               e.printStackTrace();
             }
-        }
-        return null;
-    }
-
-    @Override
-    public JavaPlugin loadPlugin(File file) throws InvalidPluginException {
-        checkNotNull(file, "File cannot be null");
-
-        if (!file.exists()) {
-            throw new InvalidPluginException(new FileNotFoundException(file.getPath() + " does not exist"));
-        }
-
-        final PluginDescriptor pluginDescriptor = getPluginDescriptor(file);
-
-        String mainClass = pluginDescriptor.getMainClass();
-        URLClassLoader loader = null;
-        JarFile jar = null;
-
-        try {
-            // Load jar in memory
-           loader = new URLClassLoader(new URL[] { file.toURL() });
-
-            jar = new JarFile(file.getAbsolutePath());
-            String mainClassString = mainClass.replace(".", "/") + ".class";
-            JarEntry entry = jar.getJarEntry(mainClassString);
-            if(entry == null){
-                throw new InvalidPluginException("The declared main file doesnt exists !");
-            }
-
-           Enumeration<JarEntry> entries = jar.entries();
-
-           // Need this else we only load the main class and not related other classes (todo find an elegant solution)
-           while (entries.hasMoreElements()) {
-
-              JarEntry current = entries.nextElement();
-              if (current.toString().endsWith(".class")) {
-                 Class.forName(current.toString().replace("/", ".").replace(".class", ""), true, loader);
-              }
-
-           }
-
-            Class jarClass = Class.forName(mainClass, true, loader);
-           //   Class anotherclass = Class.forName("com.foo.SensorListener", true, loader);
-
-            Class<? extends JavaPlugin> pluginClass;
+         }
+         if (jar != null) {
             try {
-                pluginClass = jarClass.asSubclass(JavaPlugin.class);
-            } catch (ClassCastException ex) {
-                throw new InvalidPluginException("main class `" + pluginDescriptor.getMainClass() + "' does not extend JavaPlugin");
+               jar.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
+         }
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<JavaPlugin> loadPlugins(Path path) throws FileNotFoundException {
+
+      checkNotNull(path, "Directory cannot be null");
+
+      List<JavaPlugin> plugins = new ArrayList<>();
+
+      if (!Files.exists(path)) {
+         throw new FileNotFoundException("The given path doesn't exists");
+      }
+
+      if (!Files.isDirectory(path)) {
+         // TODO
+         //    throw new IsNotADirectoryException("The given parameter is not a valid directory");
+      }
+
+      List<File> pluginsToLoad = Collections.emptyList();
+      try {
+         Files
+               .list(path)
+               .filter(file -> Files.isRegularFile(file))
+               .filter(file -> file.getFileName().toString().endsWith(".jar"))
+               .forEach(file -> {
+                  try {
+                     plugins.add(loadPlugin(file.toFile()));
+                  } catch (InvalidPluginException e) {
+                     e.printStackTrace();
+                  }
+               });
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      return plugins;
+   }
+
+   @Override
+   public void disablePlugins() {
+
+   }
+
+   @Override
+   public void clearPlugins() {
+
+   }
+
+   @Override
+   public void registerEvents(AquaboxListener listener, JavaPlugin plugin) {
+
+      for (Method method : listener.getClass().getDeclaredMethods()) {
+
+         if (method.isAnnotationPresent(org.aquapilot.aquabox.api.listener.Handler.class)
+               && method.getParameterCount() == 1) {
+            Parameter[] parameters = method.getParameters();
+            Class<?> type = (Class<? extends Event>) parameters[0].getType();
+            Event event = Event.valueOf((Class<? extends AquaboxEvent>) type);
+
+            if (!this.events.containsKey(event)) {
+               this.events.put(event, new ArrayList<>());
             }
 
-            JavaPlugin plugin = pluginClass.newInstance();
-           Method initMethod = plugin
-                 .getClass()
-                 .getSuperclass()
-                 .getDeclaredMethod("init", PluginDescriptor.class, PluginManager.class);
-            initMethod.setAccessible(true);
-           initMethod.invoke(plugin, pluginDescriptor, this);
+            this.events.get(event).add(new EventRegistration(listener, method, plugin));
 
+            System.out.println(type.getName());
+         }
+      }
+   }
 
-            this.pluginsList.add(jarClass);
-            this.plugins.put(file, plugin);
-            this.pluginsDescriptors.put(plugin, pluginDescriptor);
+   public Map<Event, List<EventRegistration>> getRegisteredEvents() {
 
-            return plugin;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } finally {
-            if (loader != null) {
-                try {
-                    loader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-           if (jar != null) {
-              try {
-                 jar.close();
-              } catch (IOException e) {
-                 e.printStackTrace();
-              }
-            }
-        }
-        return null;
-    }
+      return this.events;
+   }
 
-    @Override
-    public Collection<JavaPlugin> loadPlugins(Path path) throws FileNotFoundException {
-        checkNotNull(path, "Directory cannot be null");
+   @Override
+   public void enablePlugin(JavaPlugin plugin) {
 
-        List<JavaPlugin> plugins = new ArrayList<>();
+      plugin.onEnable();
+   }
 
-        if (!Files.exists(path)) {
-            throw new FileNotFoundException("The given path doesn't exists");
-        }
+   @Override
+   public void disablePlugin(JavaPlugin plugin) {
 
-        if (!Files.isDirectory(path)) {
-            // TODO
-            //    throw new IsNotADirectoryException("The given parameter is not a valid directory");
-        }
-
-        List<File> pluginsToLoad = Collections.emptyList();
-        try {
-            Files.list(path)
-                    .filter(file -> Files.isRegularFile(file))
-                    .filter(file -> file.getFileName().toString().endsWith(".jar"))
-                    .forEach(
-                            file -> {
-                                try {
-                                    plugins.add(loadPlugin(file.toFile()));
-                                } catch (InvalidPluginException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                    );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return plugins;
-    }
-
-    @Override
-    public void disablePlugins() {
-
-    }
-
-    @Override
-    public void clearPlugins() {
-
-    }
+   }
 
    public class EventRegistration {
 
@@ -277,56 +326,20 @@ public class PluginManagerImpl implements PluginManager {
          this.plugin = plugin;
       }
 
-      public JavaPlugin getPlugin(){
-          return this.plugin;
+      public JavaPlugin getPlugin() {
+
+         return this.plugin;
       }
 
-      public AquaboxListener getListener(){
-          return this.listener;
+      public AquaboxListener getListener() {
+
+         return this.listener;
       }
 
-      public Method getMethod(){
-          return this.method;
+      public Method getMethod() {
+
+         return this.method;
       }
 
    }
-
-   private Map<Event, List<EventRegistration>> events = new HashMap<>();
-
-    @Override
-    public void registerEvents(AquaboxListener listener, JavaPlugin plugin) {
-
-       for (Method method : listener.getClass().getDeclaredMethods()) {
-
-          if (method.isAnnotationPresent(org.aquapilot.aquabox.api.listener.Handler.class)
-                && method.getParameterCount() == 1) {
-             Parameter[] parameters = method.getParameters();
-             Class<?> type = (Class<? extends Event>) parameters[0].getType();
-             Event event = Event.valueOf((Class<? extends AquaboxEvent>) type);
-
-             if (!events.containsKey(event)) {
-                events.put(event, new ArrayList<>());
-             }
-
-             events.get(event).add(new EventRegistration(listener, method, plugin));
-
-             System.out.println(type.getName());
-          }
-       }
-    }
-
-   public Map<Event, List<EventRegistration>> getRegisteredEvents() {
-
-      return this.events;
-   }
-
-    @Override
-    public void enablePlugin(JavaPlugin plugin) {
-        plugin.onEnable();
-    }
-
-    @Override
-    public void disablePlugin(JavaPlugin plugin) {
-
-    }
 }

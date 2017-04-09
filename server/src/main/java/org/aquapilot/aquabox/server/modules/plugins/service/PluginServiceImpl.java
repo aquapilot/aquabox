@@ -9,23 +9,13 @@
 
 package org.aquapilot.aquabox.server.modules.plugins.service;
 
-import com.pi4j.io.gpio.RaspiPin;
 import org.aquapilot.aquabox.api.JavaPlugin;
-import org.aquapilot.aquabox.api.event.AquaboxEvent;
 import org.aquapilot.aquabox.api.event.Event;
-import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
-import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
-import org.aquapilot.aquabox.server.modules.sensors.SensorService;
-import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.slf4j.Logger;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;

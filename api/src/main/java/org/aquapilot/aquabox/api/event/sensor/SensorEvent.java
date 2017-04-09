@@ -7,13 +7,15 @@
  * file that was distributed with this source code.
  */
 
-package org.aquapilot.aquabox.api;
+package org.aquapilot.aquabox.api.event.sensor;
+
+import org.aquapilot.aquabox.api.event.AquaboxEvent;
 
 /**
- * This enum declare the states that a pin can have.
+ * This interface must be implemented by every event related to Sensors
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum PinState {
-   HIGH, LOW
+public interface SensorEvent extends AquaboxEvent {
+
 }

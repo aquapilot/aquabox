@@ -10,12 +10,12 @@
 package org.aquapilot.aquabox.server.modules.sensors;
 
 import com.pi4j.io.spi.SpiDevice;
-import org.aquapilot.aquabox.api.event.SensorBatteryStatusEvent;
-import org.aquapilot.aquabox.api.event.SensorDetectedEvent;
-import org.aquapilot.aquabox.api.event.SensorUnreachableEvent;
-import org.aquapilot.aquabox.api.event.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorBatteryStatusEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorUnreachableEventImpl;
+import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEventImpl;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.slf4j.Logger;
 
@@ -77,28 +77,28 @@ public class SensorMockServiceImpl implements SensorService {
 
                switch (randomBetween(0, 10)) {
                   case 0:
-                     SensorDetectedEvent event = SensorDetectedEvent
+                     SensorDetectedEventImpl event = SensorDetectedEventImpl
                            .newInstance()
                            .UUID(UUID.randomUUID().toString())
                            .build();
                      listener.onNewSensorDetected(event);
                      break;
                   case 1:
-                     SensorBatteryStatusEvent sensorBatteryStatusEvent = SensorBatteryStatusEvent
+                     SensorBatteryStatusEventImpl sensorBatteryStatusEvent = SensorBatteryStatusEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .build();
                      listener.onSensorSendBatteryStatus(sensorBatteryStatusEvent);
                      break;
                   case 2:
-                     SensorUnreachableEvent sensorUnreachableEvent = SensorUnreachableEvent
+                     SensorUnreachableEventImpl sensorUnreachableEvent = SensorUnreachableEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .build();
                      listener.onSensorUnreachable(sensorUnreachableEvent);
                      break;
                   default:
-                     SensorValueChangeEvent sensorValueChangeEvent = SensorValueChangeEvent
+                     SensorValueChangeEventImpl sensorValueChangeEvent = SensorValueChangeEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .oldValue("15.0")

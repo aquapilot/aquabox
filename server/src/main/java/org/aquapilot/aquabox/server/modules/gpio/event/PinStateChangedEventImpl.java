@@ -11,7 +11,7 @@ package org.aquapilot.aquabox.server.modules.gpio.event;
 
 import com.pi4j.io.gpio.Pin;
 import org.aquapilot.aquabox.api.PinState;
-import org.aquapilot.aquabox.api.event.StateChangedEvent;
+import org.aquapilot.aquabox.api.event.gpio.PinStateChangedEvent;
 
 import javax.annotation.Generated;
 
@@ -20,13 +20,13 @@ import javax.annotation.Generated;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public class StateChangedEventImpl implements StateChangedEvent {
+public class PinStateChangedEventImpl implements PinStateChangedEvent {
 
    private final PinState oldState;
    private final PinState newState;
    private final Pin pin;
 
-   private StateChangedEventImpl(PinState oldState, PinState newState, Pin pin) {
+   private PinStateChangedEventImpl(PinState oldState, PinState newState, Pin pin) {
 
       this.oldState = oldState;
       this.newState = newState;
@@ -77,7 +77,7 @@ public class StateChangedEventImpl implements StateChangedEvent {
    @Generated(value = "Step Builder Generator Plugin")
    public interface FinalStep {
 
-      StateChangedEventImpl build();
+      PinStateChangedEventImpl build();
    }
 
    @Generated(value = "Step Builder Generator Plugin")
@@ -105,9 +105,9 @@ public class StateChangedEventImpl implements StateChangedEvent {
          return this;
       }
 
-      public StateChangedEventImpl build() {
+      public PinStateChangedEventImpl build() {
 
-         StateChangedEventImpl theObject = new StateChangedEventImpl(oldState, newState, pin);
+         PinStateChangedEventImpl theObject = new PinStateChangedEventImpl(oldState, newState, pin);
          return theObject;
       }
    }
