@@ -10,6 +10,7 @@
 package org.aquapilot.aquabox.server.modules.sensors;
 
 import com.google.inject.AbstractModule;
+import org.aquapilot.aquabox.server.Environment;
 
 /**
  * This Module provide communication between sensors (gpio) and storage
@@ -18,9 +19,22 @@ import com.google.inject.AbstractModule;
  */
 public class SensorModule extends AbstractModule {
 
+   private final Environment environment;
+
+   public SensorModule(Environment env){
+      this.environment = env;
+   }
+
    @Override
    protected void configure() {
 
-      bind(SensorService.class).to(SensorMockServiceImpl.class).asEagerSingleton();
+      Class classToLoad = null;
+      if(Environment.RASPBERRY_PI == environment) {
+         classToLoad = SensorServiceImpl.class;
+      } else if(Environment.SIMULATOR == environment){
+         classToLoad = SensorMockServiceImpl.class;
+      }
+
+      bind(SensorService.class).to(classToLoad).asEagerSingleton();
    }
 }

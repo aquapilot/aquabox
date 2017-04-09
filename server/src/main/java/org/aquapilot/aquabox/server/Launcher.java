@@ -54,7 +54,7 @@ public class Launcher {
       Settings settings = settingsHelper.loadSettings();
 
       Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
-                                               new StorageModule(settings), new GPIOModule(environment), new SensorModule(),
+                                               new StorageModule(settings), new GPIOModule(environment), new SensorModule(environment),
                                                 new PluginsModule(),
                                                new NotifierModule());
 
