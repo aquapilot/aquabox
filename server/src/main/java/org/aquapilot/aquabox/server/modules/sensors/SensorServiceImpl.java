@@ -13,7 +13,9 @@ import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
+import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
+import org.slf4j.Logger;
 
 import javax.inject.Inject;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +36,9 @@ public class SensorServiceImpl implements SensorService {
 
     private ExecutorService executor;
 
+    @Log
+    Logger logger;
+
     //setter method injector
     @Inject
     public void setServices(GPIOService gpioService) {
@@ -48,12 +53,12 @@ public class SensorServiceImpl implements SensorService {
 
 
         System.out.println(">> Sensor Service started");
+        logger.info("Sensor Service started");
         executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while (true) {
-
+                logger.info("Here");
                 System.out.println("sensor >>>");
-                System.out.println("  Reading via I2C");
                 int dataRead = tranceiver.read();
                 System.out.println("  "+dataRead + " via I2C");
                 TimeUnit.SECONDS.sleep(waitTimeRead);
