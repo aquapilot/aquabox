@@ -10,7 +10,9 @@
 package org.aquapilot.aquabox.server.modules.gpio;
 
 import com.google.inject.AbstractModule;
+import org.aquapilot.aquabox.server.Environment;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
+import org.aquapilot.aquabox.server.modules.gpio.services.PI4JGPIOServiceImpl;
 import org.aquapilot.aquabox.server.modules.gpio.services.PI4JMockGPIOServiceImpl;
 
 /**
@@ -20,9 +22,23 @@ import org.aquapilot.aquabox.server.modules.gpio.services.PI4JMockGPIOServiceImp
  */
 public class GPIOModule extends AbstractModule {
 
+   private final Environment environment;
+
+   public GPIOModule(Environment env) {
+      this.environment = env;
+   }
+
    @Override
    protected void configure() {
 
-      bind(GPIOService.class).to(PI4JMockGPIOServiceImpl.class).asEagerSingleton();
+      Class classToLoad = null;
+
+      if(Environment.RASPBERRY_PI == this.environment){
+         classToLoad = PI4JGPIOServiceImpl.class;
+      } else if(Environment.SIMULATOR == this.environment) {
+         classToLoad = PI4JMockGPIOServiceImpl.class;
+      }
+
+      bind(GPIOService.class).to(classToLoad).asEagerSingleton();
    }
 }

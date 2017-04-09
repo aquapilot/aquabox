@@ -23,7 +23,6 @@ public class AquaboxTest {
     @Test
     public void main_shouldInvokeInitializeServices_whenInvoked() throws Exception {
 
-        Environment environment = Environment.DEV;
 
         assertTrue(true);
     }

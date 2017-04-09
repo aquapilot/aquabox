@@ -46,11 +46,15 @@ public class Launcher {
          return;
       }
 
+      // TODO: manage that with CLI args
+   //   Environment environment = Environment.RASPBERRY_PI;
+      Environment environment = Environment.SIMULATOR;
+
       SettingsHelper settingsHelper = new SettingsHelperImpl();
       Settings settings = settingsHelper.loadSettings();
 
       Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
-                                               new StorageModule(settings), new GPIOModule(), new SensorModule(),
+                                               new StorageModule(settings), new GPIOModule(environment), new SensorModule(),
                                                 new PluginsModule(),
                                                new NotifierModule());
 

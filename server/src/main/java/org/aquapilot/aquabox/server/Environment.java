@@ -15,5 +15,5 @@ package org.aquapilot.aquabox.server;
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
 public enum Environment {
-   PROD, DEV
+   RASPBERRY_PI, SIMULATOR;
 }
