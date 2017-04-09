@@ -12,6 +12,8 @@ package org.aquapilot.aquabox.server.modules.gpio.services;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.modules.gpio.listener.GPIOPinStateListener;
@@ -56,4 +58,10 @@ public interface GPIOService extends Service {
    void registerChangeListener(Pin pin, GPIOPinStateListener listener);
 
    SpiDevice getSPI();
+
+   /**
+    * Return a direct access to the RF24 tranceiver (connected on I2C 0x04)
+    * @return
+    */
+   I2CDevice getI2CDevice();
 }

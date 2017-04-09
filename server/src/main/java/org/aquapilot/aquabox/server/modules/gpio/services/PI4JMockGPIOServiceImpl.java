@@ -14,6 +14,7 @@ import com.pi4j.io.gpio.GpioPinDigitalInput;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.spi.SpiDevice;
 import com.pi4j.io.spi.impl.SpiDeviceImpl;
 import org.aquapilot.aquabox.api.PinState;
@@ -98,6 +99,11 @@ public class PI4JMockGPIOServiceImpl implements GPIOService {
    public SpiDevice getSPI() {
       // create SPI object instance for SPI for communication
       return mock(SpiDeviceImpl.class);
+   }
+
+   @Override
+   public I2CDevice getI2CDevice() {
+      return null;
    }
 
    @Override

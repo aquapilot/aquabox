@@ -10,6 +10,7 @@
 package org.aquapilot.aquabox.server.modules.sensors;
 
 import com.pi4j.io.gpio.RaspiPin;
+import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
@@ -42,19 +43,20 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public void start() throws Exception {
 
-       gpioService.registerInputDigitalPin(RaspiPin.GPIO_00); // RF Sensor data
+        I2CDevice tranceiver = gpioService.getI2CDevice();
+        long waitTimeRead = 5;
 
-        SpiDevice spi = gpioService.getSPI();
+
         System.out.println(">> Sensor Service started");
         executor = Executors.newSingleThreadExecutor();
         executor.submit(() -> {
             while (true) {
 
-                TimeUnit.SECONDS.sleep(1);
                 System.out.println("sensor >>>");
-                // final byte[] response = spi.write("00000000".getBytes());
-                // System.out.println("SPI responded : " + response.toString());
-
+                System.out.println("  Reading via I2C");
+                int dataRead = tranceiver.read();
+                System.out.println("  "+dataRead + " via I2C");
+                TimeUnit.SECONDS.sleep(waitTimeRead);
             }
         });
 
