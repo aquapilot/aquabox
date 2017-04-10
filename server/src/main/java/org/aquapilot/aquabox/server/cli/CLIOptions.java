@@ -30,6 +30,9 @@ public class CLIOptions {
    @Option(name = "-d", aliases = { "--debug" }, usage = "Enable debug mode")
    private boolean debug;
 
+   @Option(name = "-s", aliases = { "--simulate" }, usage = "Simulate raspberrypi activity on GPIO")
+   private boolean enableSimulator;
+
    public boolean isHelp() {
 
       return this.help;
@@ -43,5 +46,10 @@ public class CLIOptions {
    public boolean isDebug() {
 
       return this.debug;
+   }
+
+   public boolean isEnableSimulator() {
+
+      return this.enableSimulator;
    }
 }

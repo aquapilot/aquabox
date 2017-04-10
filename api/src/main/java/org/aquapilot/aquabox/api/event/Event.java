@@ -50,6 +50,7 @@ public enum Event {
          if (event.getAssociatedClass().equals(clazz)) {
             return event;
          }
+
       }
       return null; // Todo throw exception
    }

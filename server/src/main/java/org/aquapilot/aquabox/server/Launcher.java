@@ -13,6 +13,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.aquapilot.aquabox.server.cli.CLIHelper;
 import org.aquapilot.aquabox.server.cli.CLIHelperImpl;
+import org.aquapilot.aquabox.server.modules.eventbus.EventBusModule;
 import org.aquapilot.aquabox.server.modules.gpio.GPIOModule;
 import org.aquapilot.aquabox.server.modules.logger.LoggerModule;
 import org.aquapilot.aquabox.server.modules.notifier.NotifierModule;
@@ -46,16 +47,16 @@ public class Launcher {
          return;
       }
 
-      // TODO: manage that with CLI args
-   //   Environment environment = Environment.RASPBERRY_PI;
-      Environment environment = Environment.SIMULATOR;
-
+      Environment environment = Environment.RASPBERRY_PI;
+      if (cli.isSimulatorEnabled()) {
+         environment = Environment.SIMULATOR;
+      }
       SettingsHelper settingsHelper = new SettingsHelperImpl();
       Settings settings = settingsHelper.loadSettings();
 
-      Injector injector = Guice.createInjector(new SettingsModule(settings), new LoggerModule(),
+      Injector injector = Guice.createInjector(new EventBusModule(), new SettingsModule(settings), new LoggerModule(),
                                                new StorageModule(settings), new GPIOModule(environment), new SensorModule(environment),
-                                                new PluginsModule(),
+                                               new PluginsModule(),
                                                new NotifierModule());
 
       Aquabox aquabox = injector.getInstance(Aquabox.class);

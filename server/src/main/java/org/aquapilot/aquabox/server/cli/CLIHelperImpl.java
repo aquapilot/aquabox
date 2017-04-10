@@ -33,6 +33,7 @@ public class CLIHelperImpl implements CLIHelper {
 
    private CmdLineParser parser;
    private boolean allowedToStart = true;
+   private boolean simulatorEnabled = false;
 
    @Override
    public void parseArguments(String[] args) {
@@ -58,6 +59,9 @@ public class CLIHelperImpl implements CLIHelper {
          if (options.isDebug()) {
             enableDebug();
          }
+         if (options.isEnableSimulator()) {
+            this.simulatorEnabled = true;
+         }
       } catch (CmdLineException e) {
          LOGGER.debug("The given cli parameter is not a valid one.");
 
@@ -73,6 +77,12 @@ public class CLIHelperImpl implements CLIHelper {
 
       LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
       lc.getLogger("org.aquapilot.aquabox").setLevel(Level.DEBUG);
+   }
+
+   @Override
+   public boolean isSimulatorEnabled() {
+
+      return this.simulatorEnabled;
    }
 
    @Override

@@ -9,6 +9,8 @@
 
 package org.aquapilot.aquabox.server;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import org.aquapilot.aquabox.api.event.AquaboxEvent;
 import org.aquapilot.aquabox.api.event.Event;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
@@ -17,14 +19,10 @@ import org.aquapilot.aquabox.server.common.SystemUtil;
 import org.aquapilot.aquabox.server.common.asciiart.FigletFontAsciiArtConverter;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
-import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
 import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
 import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
 import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
 import org.aquapilot.aquabox.server.modules.sensors.SensorService;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEventImpl;
-import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEventImpl;
-import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.aquapilot.aquabox.server.modules.storage.services.StorageService;
 import org.slf4j.Logger;
 
@@ -50,6 +48,8 @@ public class Aquabox {
     @Log
     private Logger log;
 
+   private EventBus eventBus;
+
     private boolean started = false;
     private Set<Service> registeredServices = new HashSet<>();
 
@@ -59,9 +59,12 @@ public class Aquabox {
     private PluginService pluginService;
 
     @Inject
-    public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
+    public void setServices(EventBus eventBus, StorageService storageService, SensorService sensorService,
+          GPIOService gpioService,
                             PluginService pluginService,
                             NotifierService notifierService) {
+
+       this.eventBus = eventBus;
 
         this.registerService(storageService);
         this.registerService(sensorService);
@@ -131,32 +134,39 @@ public class Aquabox {
                 service.start();
             }
 
-            this.sensorService.registerListener(new SensorListener() {
-
-                @Override
-                public void onSensorValueChange(SensorValueChangeEventImpl event) {
-
-                    Aquabox.this.log.debug(
-                            String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
-                    handleEvent(event);
-                    Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
-                }
-
-                @Override
-                public void onNewSensorDetected(SensorDetectedEventImpl event) {
-
-                    Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
-
-                    // Notify firebase
-                    Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
-                }
-            });
+           //            this.sensorService.registerListener(new SensorListener() {
+           //
+           //                @Override
+           //                public void onSensorValueChange(SensorValueChangeEventImpl event) {
+           //
+           //                    Aquabox.this.log.debug(
+           //                            String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
+           //                    handleEvent(event);
+           //                    Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
+           //                }
+           //
+           //                @Override
+           //                public void onNewSensorDetected(SensorDetectedEventImpl event) {
+           //
+           //                    Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
+           //
+           //                    // Notify firebase
+           //                    Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
+           //                }
+           //            });
 
         } catch (Exception exception) {
             this.log.error("We applogize an unexpected error occured.", exception);
         }
 
     }
+
+   @Subscribe
+   public void handle(AquaboxEvent event) {
+      // handle event
+      System.out.println("CATCHED EVENT " + event.getClass());
+      // TODO: make handleEvent working with this kind of thing
+   }
 
     private void handleEvent(AquaboxEvent event) {
 

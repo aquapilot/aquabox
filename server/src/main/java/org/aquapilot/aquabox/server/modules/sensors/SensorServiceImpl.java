@@ -9,9 +9,7 @@
 
 package org.aquapilot.aquabox.server.modules.sensors;
 
-import com.pi4j.io.gpio.RaspiPin;
 import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.spi.SpiDevice;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
@@ -32,53 +30,51 @@ import java.util.concurrent.TimeUnit;
  */
 public class SensorServiceImpl implements SensorService {
 
-    private GPIOService gpioService;
+   private GPIOService gpioService;
 
-    private ExecutorService executor;
+   private ExecutorService executor;
 
-    @Log
-    Logger logger;
+   @Log
+   Logger logger;
 
-    //setter method injector
-    @Inject
-    public void setServices(GPIOService gpioService) {
-        this.gpioService = gpioService;
-    }
+   //setter method injector
+   @Inject
+   public void setServices(GPIOService gpioService) {
 
-    @Override
-    public void start() throws Exception {
+      this.gpioService = gpioService;
+   }
 
-        I2CDevice tranceiver = gpioService.getI2CDevice();
-        long waitTimeRead = 5;
+   @Override
+   public void start() throws Exception {
 
+      I2CDevice tranceiver = gpioService.getI2CDevice();
+      long waitTimeRead = 5;
 
-        System.out.println(">> Sensor Service started");
-        logger.info("Sensor Service started");
-        executor = Executors.newSingleThreadExecutor();
-        executor.submit(() -> {
-            while (true) {
-                logger.info("Here");
-                System.out.println("sensor >>>");
-                int dataRead = tranceiver.read();
-                System.out.println("  "+dataRead + " via I2C");
-                TimeUnit.SECONDS.sleep(waitTimeRead);
-            }
-        });
+      logger.info("Sensor Service started");
+      executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         while (true) {
+            int dataRead = tranceiver.read();
+            logger.debug("sensor >>" + dataRead);
+            TimeUnit.SECONDS.sleep(waitTimeRead);
+         }
+      });
 
-    }
+   }
 
-    @Override
-    public void stop() {
-        if (executor.isShutdown()) {
-            return;
-        }
+   @Override
+   public void stop() {
 
-        executor.shutdownNow();
-        System.out.println(">> Sensor service stopped");
-    }
+      if (executor.isShutdown()) {
+         return;
+      }
 
-    @Override
-    public void registerListener(SensorListener listener) {
+      executor.shutdownNow();
+      System.out.println(">> Sensor service stopped");
+   }
 
-    }
+   @Override
+   public void registerListener(SensorListener listener) {
+
+   }
 }

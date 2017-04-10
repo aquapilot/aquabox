@@ -47,4 +47,11 @@ public interface CLIHelper {
     * <p>It display log.debug entries</p>
     */
    void enableDebug();
+
+   /**
+    * Returns true when the simulator is enabled
+    *
+    * @return
+    */
+   boolean isSimulatorEnabled();
 }

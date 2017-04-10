@@ -9,7 +9,12 @@
 
 package org.aquapilot.aquabox.server.modules.sensors;
 
+import com.google.common.eventbus.EventBus;
 import com.pi4j.io.spi.SpiDevice;
+import org.aquapilot.aquabox.api.event.sensor.SensorBatteryStatusEvent;
+import org.aquapilot.aquabox.api.event.sensor.SensorDetectedEvent;
+import org.aquapilot.aquabox.api.event.sensor.SensorUnreachableEvent;
+import org.aquapilot.aquabox.api.event.sensor.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorBatteryStatusEventImpl;
@@ -38,7 +43,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class SensorMockServiceImpl implements SensorService {
 
-   List<SensorListener> listeners = new ArrayList<>();
+   private EventBus eventBus;
+
    @Log
    Logger log;
    private GPIOService gpioService;
@@ -46,9 +52,10 @@ public class SensorMockServiceImpl implements SensorService {
 
    //setter method injector
    @Inject
-   public void setServices(GPIOService gpioService) {
+   public void setServices(GPIOService gpioService, EventBus eventBus) {
 
       this.gpioService = gpioService;
+      this.eventBus = eventBus;
    }
 
    private int randomBetween(int min, int max) {
@@ -73,44 +80,43 @@ public class SensorMockServiceImpl implements SensorService {
 
             TimeUnit.SECONDS.sleep(8);
             // generate random receptions
-            for (SensorListener listener : this.listeners) {
+
 
                switch (randomBetween(0, 10)) {
                   case 0:
-                     SensorDetectedEventImpl event = SensorDetectedEventImpl
+                     SensorDetectedEvent event = SensorDetectedEventImpl
                            .newInstance()
                            .UUID(UUID.randomUUID().toString())
                            .build();
-                     listener.onNewSensorDetected(event);
+                     eventBus.post(event);
                      break;
                   case 1:
-                     SensorBatteryStatusEventImpl sensorBatteryStatusEvent = SensorBatteryStatusEventImpl
+                     SensorBatteryStatusEvent sensorBatteryStatusEvent = SensorBatteryStatusEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .build();
-                     listener.onSensorSendBatteryStatus(sensorBatteryStatusEvent);
+                     eventBus.post(sensorBatteryStatusEvent);
                      break;
                   case 2:
-                     SensorUnreachableEventImpl sensorUnreachableEvent = SensorUnreachableEventImpl
+                     SensorUnreachableEvent sensorUnreachableEvent = SensorUnreachableEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .build();
-                     listener.onSensorUnreachable(sensorUnreachableEvent);
+                     eventBus.post(sensorUnreachableEvent);
                      break;
                   default:
-                     SensorValueChangeEventImpl sensorValueChangeEvent = SensorValueChangeEventImpl
+                     SensorValueChangeEvent sensorValueChangeEvent = SensorValueChangeEventImpl
                            .newInstance()
                            .UUID(registredUUIDs.get(randomBetween(0, 2)))
                            .oldValue("15.0")
                            .newValue("22.4")
                            .build();
-                     listener.onSensorValueChange(sensorValueChangeEvent);
+                     eventBus.post(sensorValueChangeEvent);
                      break;
                }
 
             }
 
-         }
       });
       this.log.debug(">> Sensor Service started");
    }
@@ -129,6 +135,5 @@ public class SensorMockServiceImpl implements SensorService {
    @Override
    public void registerListener(SensorListener listener) {
 
-      this.listeners.add(listener);
    }
 }
