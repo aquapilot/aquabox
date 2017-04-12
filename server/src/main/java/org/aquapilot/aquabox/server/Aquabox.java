@@ -9,7 +9,6 @@
 
 package org.aquapilot.aquabox.server;
 
-import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import org.aquapilot.aquabox.api.event.AquaboxEvent;
 import org.aquapilot.aquabox.api.event.Event;
@@ -30,6 +29,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,156 +45,151 @@ import java.util.concurrent.Executors;
 @Singleton
 public class Aquabox {
 
-    @Log
-    private Logger log;
+   @Log
+   @SuppressWarnings({ "unusedPrivate", "unused" })
+   private Logger log;
 
-   private EventBus eventBus;
+   private final Set<Service> registeredServices = new HashSet<>();
 
-    private boolean started = false;
-    private Set<Service> registeredServices = new HashSet<>();
+   private PluginService pluginService;
+   private boolean started = false;
 
-    private SensorService sensorService;
-    private StorageService storageService;
-    private NotifierService notifierService;
-    private PluginService pluginService;
+   @Inject
+   public void setServices(StorageService storageService, SensorService sensorService, GPIOService gpioService,
+         PluginService pluginService, NotifierService notifierService) {
 
-    @Inject
-    public void setServices(EventBus eventBus, StorageService storageService, SensorService sensorService,
-          GPIOService gpioService,
-                            PluginService pluginService,
-                            NotifierService notifierService) {
+      this.pluginService = pluginService;
 
-       this.eventBus = eventBus;
+      this.registerService(storageService);
+      this.registerService(sensorService);
+      this.registerService(gpioService);
+      this.registerService(notifierService);
+      this.registerService(pluginService);
 
-        this.registerService(storageService);
-        this.registerService(sensorService);
-        this.registerService(gpioService);
-        this.registerService(notifierService);
-        this.registerService(pluginService);
-
-        // TODO not really beautifull code redundancy
-        this.sensorService = sensorService;
-        this.storageService = storageService;
-        this.notifierService = notifierService;
-        this.pluginService = pluginService;
-    }
-
-    private void registerService(Service service) {
-
-        this.registeredServices.add(service);
-    }
-
-    /**
-     * Start the aquabox
-     */
-    public void start() {
-
-        if (this.started) {
-            this.log.warn("Could not start aquabox, it is already running.");
-            return;
-        }
-
-        init();
-
-        this.started = true;
-        while (this.started) {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                this.log.warn("Aquabox thread was interrupted", e);
-                Thread.currentThread().interrupt();
-                this.started = false;
-            }
-        }
-
-        stop(); // If we are here, it means the aquabox infinite loop is aborted so we stop the app
-    }
-
-    /**
-     * Stop the aquabox
-     */
-    public void stop() {
-
-        this.started = false;
-        this.log.info("Stopping services ...");
-        for (Service service : this.registeredServices) {
-            service.stop();
-        }
-    }
-
-    private void init() {
-
-        new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
-        new SystemUtil().checkSystem();
-
-        try {
-
-            this.log.info("Starting services ...");
-            for (Service service : this.registeredServices) {
-                service.start();
-            }
-
-           //            this.sensorService.registerListener(new SensorListener() {
-           //
-           //                @Override
-           //                public void onSensorValueChange(SensorValueChangeEventImpl event) {
-           //
-           //                    Aquabox.this.log.debug(
-           //                            String.format("Sensor uuid=%s sent a new value %s", event.getUUID(), event.getNewValue()));
-           //                    handleEvent(event);
-           //                    Aquabox.this.storageService.saveMeasure(event.getUUID(), event.getNewValue());
-           //                }
-           //
-           //                @Override
-           //                public void onNewSensorDetected(SensorDetectedEventImpl event) {
-           //
-           //                    Aquabox.this.log.debug(String.format("A new sensor with uuid=%s has been detected", event.getUUID()));
-           //
-           //                    // Notify firebase
-           //                    Aquabox.this.notifierService.notify(new NewSensorDetectedNotification(event.getUUID()));
-           //                }
-           //            });
-
-        } catch (Exception exception) {
-            this.log.error("We applogize an unexpected error occured.", exception);
-        }
-
-    }
-
-   @Subscribe
-   public void handle(AquaboxEvent event) {
-      // handle event
-      System.out.println("CATCHED EVENT " + event.getClass());
-      // TODO: make handleEvent working with this kind of thing
    }
 
-    private void handleEvent(AquaboxEvent event) {
+   private void registerService(Service service) {
 
-        // fire event to registered plugin listeners
-        Event ev = Event.valueOf(event);
-        Map<Event, List<PluginManagerImpl.EventRegistration>> registeredEvents = this.pluginService.getRegisteredEvents();
-        List<PluginManagerImpl.EventRegistration> methodsToCall = registeredEvents.get(ev);
-        for (PluginManagerImpl.EventRegistration registration : methodsToCall) {
+      this.registeredServices.add(service);
+   }
 
+   /**
+    * Start the aquabox
+    */
+   public void start() {
 
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.submit(() -> {
+      if (this.started) {
+         this.log.warn("Could not start aquabox, it is already running.");
+         return;
+      }
 
-                try {
-                    Method declaredMethod = registration
-                            .getListener()
-                            .getClass()
-                            .getDeclaredMethod(registration.getMethod().getName(), ev.getAssociatedClass());
-                    declaredMethod.invoke(registration.getListener(), event);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
-    }
+      init();
+
+      this.started = true;
+      while (this.started) {
+         try {
+            Thread.sleep(3000);
+         } catch (InterruptedException e) {
+            this.log.warn("Aquabox thread was interrupted", e);
+            Thread.currentThread().interrupt();
+            this.started = false;
+         }
+      }
+
+      stop(); // If we are here, it means the aquabox infinite loop is aborted so we stop the app
+   }
+
+   /**
+    * Stop the aquabox
+    */
+   public void stop() {
+
+      this.started = false;
+      this.log.info("Stopping services ...");
+      for (Service service : this.registeredServices) {
+         service.stop();
+      }
+   }
+
+   private void init() {
+
+      new CreditsUtil(new FigletFontAsciiArtConverter()).printCredits();
+      new SystemUtil().checkSystem();
+
+      try {
+
+         this.log.info("Starting services ...");
+         for (Service service : this.registeredServices) {
+            service.start();
+         }
+
+      } catch (Exception exception) {
+         this.log.error("We applogize an unexpected error occured.", exception);
+      }
+
+   }
+
+   /**
+    * Each events of the aquabox are handled here
+    */
+   @Subscribe
+   @SuppressWarnings("unused") // It is actually used, just managed by guava eventbus
+   public void handleEvent(AquaboxEvent event) {
+
+      Event ev = null;
+
+      for (Class<?> interfaceClass : event.getClass().getInterfaces()) {
+         // test if i is your interface
+         if (AquaboxEvent.class.isAssignableFrom(interfaceClass)) {
+            Class<? extends AquaboxEvent> eventInterfaceClass = (Class<? extends AquaboxEvent>) interfaceClass;
+            ev = Event.valueOf(eventInterfaceClass);
+            break;
+         }
+      }
+
+      if (ev == null) {
+         this.log.error("Unable to find an event refering to this implementation " + event.getClass());
+      } else {
+         System.out.println("CATCHED EVENT " + ev.name());
+
+         // fire event to registered plugin listeners
+         Map<Event, List<PluginManagerImpl.EventRegistration>> registeredEvents = this.pluginService.getRegisteredEvents();
+         List<PluginManagerImpl.EventRegistration> methodsToCall = new ArrayList<>();
+         if (registeredEvents.containsKey(ev)) {
+            methodsToCall = registeredEvents.get(ev);
+         }
+         for (PluginManagerImpl.EventRegistration registration : methodsToCall) {
+            propagateEvent(registration, ev, event);
+         }
+      }
+   }
+
+   /**
+    * Propagate the given event to all plugins listening to it
+    *
+    * @param registration
+    * @param ev
+    * @param event
+    */
+   private void propagateEvent(PluginManagerImpl.EventRegistration registration, final Event ev, AquaboxEvent event) {
+
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> {
+         try {
+            Method declaredMethod = registration
+                  .getListener()
+                  .getClass()
+                  .getDeclaredMethod(registration.getMethod().getName(), ev.getAssociatedClass());
+
+            declaredMethod.invoke(registration.getListener(), event);
+         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+         } catch (IllegalAccessException e) {
+            e.printStackTrace();
+         } catch (InvocationTargetException e) {
+            e.printStackTrace();
+         }
+      });
+   }
 
 }

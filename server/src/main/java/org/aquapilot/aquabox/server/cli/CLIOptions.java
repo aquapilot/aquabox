@@ -14,24 +14,29 @@ import org.kohsuke.args4j.Option;
 /**
  * This class describe allowed options in CLI.
  * <p>
- * It is based on Args4j
+ * For more info see Args4j documentation https://github.com/kohsuke/args4j
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
- * @link https://github.com/kohsuke/args4j
  */
 public class CLIOptions {
 
    @Option(name = "-h", aliases = { "--help" }, usage = "Display help")
+   @SuppressWarnings("unused") // It is actually used by args4j
    private boolean help;
 
    @Option(name = "-v", aliases = { "--version" }, usage = "Display version")
+   @SuppressWarnings("unused") // It is actually used by args4j
    private boolean version;
 
    @Option(name = "-d", aliases = { "--debug" }, usage = "Enable debug mode")
+   @SuppressWarnings("unused") // It is actually used by args4j
    private boolean debug;
 
-   @Option(name = "-s", aliases = { "--simulate" }, usage = "Simulate raspberrypi activity on GPIO")
-   private boolean enableSimulator;
+   @Option(name = "-s",
+         aliases = { "--simulate" },
+         usage = "Simulate raspberrypi activity on the current running " + "device.")
+   @SuppressWarnings("unused") // It is actually used by args4j
+   private boolean simulator;
 
    public boolean isHelp() {
 
@@ -48,8 +53,8 @@ public class CLIOptions {
       return this.debug;
    }
 
-   public boolean isEnableSimulator() {
+   public boolean isSimulator() {
 
-      return this.enableSimulator;
+      return this.simulator;
    }
 }

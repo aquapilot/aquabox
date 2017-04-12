@@ -79,9 +79,8 @@ public class SensorMockServiceImpl implements SensorService {
          while (true) {
 
             TimeUnit.SECONDS.sleep(8);
+
             // generate random receptions
-
-
                switch (randomBetween(0, 10)) {
                   case 0:
                      SensorDetectedEvent event = SensorDetectedEventImpl

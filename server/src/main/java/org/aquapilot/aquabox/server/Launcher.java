@@ -38,6 +38,12 @@ public class Launcher {
       // Hide the implicit public constructor
    }
 
+   /**
+    * Starting point of the Aquabox Application
+    *
+    * @param args CLI arguments
+    *             Available parameters : {@link org.aquapilot.aquabox.server.cli.CLIOptions}
+    */
    public static final void main(String[] args) {
 
       CLIHelper cli = new CLIHelperImpl();
@@ -51,13 +57,13 @@ public class Launcher {
       if (cli.isSimulatorEnabled()) {
          environment = Environment.SIMULATOR;
       }
+
       SettingsHelper settingsHelper = new SettingsHelperImpl();
       Settings settings = settingsHelper.loadSettings();
 
       Injector injector = Guice.createInjector(new EventBusModule(), new SettingsModule(settings), new LoggerModule(),
                                                new StorageModule(settings), new GPIOModule(environment), new SensorModule(environment),
-                                               new PluginsModule(),
-                                               new NotifierModule());
+                                               new PluginsModule(), new NotifierModule());
 
       Aquabox aquabox = injector.getInstance(Aquabox.class);
 

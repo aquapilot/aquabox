@@ -59,7 +59,7 @@ public class CLIHelperImpl implements CLIHelper {
          if (options.isDebug()) {
             enableDebug();
          }
-         if (options.isEnableSimulator()) {
+         if (options.isSimulator()) {
             this.simulatorEnabled = true;
          }
       } catch (CmdLineException e) {

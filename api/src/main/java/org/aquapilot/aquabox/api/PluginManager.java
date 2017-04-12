@@ -29,8 +29,8 @@ public interface PluginManager {
     * Returns the requested plugin if it is loaded
     * <p>Name is case sensitive</p>
     *
-    * @param name
-    * @return
+    * @param name Plugin name
+    * @return The plugin or an empty optional if not present.
     */
    Optional<JavaPlugin> getPlugin(String name);
 

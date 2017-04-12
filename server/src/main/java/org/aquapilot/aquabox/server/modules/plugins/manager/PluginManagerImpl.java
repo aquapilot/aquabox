@@ -9,6 +9,7 @@
 
 package org.aquapilot.aquabox.server.modules.plugins.manager;
 
+import com.google.common.eventbus.EventBus;
 import org.aquapilot.aquabox.api.JavaPlugin;
 import org.aquapilot.aquabox.api.PluginDescriptor;
 import org.aquapilot.aquabox.api.PluginManager;
@@ -18,6 +19,7 @@ import org.aquapilot.aquabox.api.exception.InvalidPluginException;
 import org.aquapilot.aquabox.api.listener.AquaboxListener;
 import org.ini4j.Ini;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -55,6 +57,13 @@ public class PluginManagerImpl implements PluginManager {
    private List<Class> pluginsList = new ArrayList<>();
    private Map<JavaPlugin, PluginDescriptor> pluginsDescriptors = new HashMap<>();
    private Map<Event, List<EventRegistration>> events = new HashMap<>();
+   private EventBus eventBus;
+
+   @Inject
+   public void setServices(EventBus eventBus) {
+
+      this.eventBus = eventBus;
+   }
 
    @Override
    public Optional<JavaPlugin> getPlugin(String name) {
