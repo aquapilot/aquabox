@@ -33,26 +33,20 @@ public interface SensorListener {
     *
     * @param event
     */
-   default void onSensorSendBatteryStatus(SensorBatteryStatusEventImpl event) {
-
-   }
+   void onSensorSendBatteryStatus(SensorBatteryStatusEventImpl event);
 
    /**
     * Called when a new sensor is connected to the aquabox network
     *
     * @param event
     */
-   default void onNewSensorDetected(SensorDetectedEventImpl event) {
-
-   }
+   void onNewSensorDetected(SensorDetectedEventImpl event);
 
    /**
     * Called when a sensor is no more reachable
     *
     * @param event
     */
-   default void onSensorUnreachable(SensorUnreachableEventImpl event) {
-
-   }
+   void onSensorUnreachable(SensorUnreachableEventImpl event);
 
 }

@@ -10,7 +10,6 @@
 package org.aquapilot.aquabox.server.modules.sensors;
 
 import org.aquapilot.aquabox.server.common.Service;
-import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 
 /**
  * This class manage the whole interactions between sensors and storage.
@@ -22,5 +21,4 @@ import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
  */
 public interface SensorService extends Service {
 
-   void registerListener(SensorListener listener);
 }

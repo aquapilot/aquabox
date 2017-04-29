@@ -14,6 +14,15 @@ package org.aquapilot.aquabox.server.modules.notifier.model;
  *
  * @author Sébastien Vermeille <sebastien.vermeille@gmail.com>
  */
-public enum NotificationType {
-   NEW_SENSOR_DETECTED, SENSOR_UNREACHABLE
+public class SensorUnreachableNotification implements Notification {
+
+   public String sensorUUID;
+   public NotificationType type;
+
+   public SensorUnreachableNotification(String sensorUUID) {
+
+      this.sensorUUID = sensorUUID;
+      this.type = NotificationType.SENSOR_UNREACHABLE;
+   }
+
 }

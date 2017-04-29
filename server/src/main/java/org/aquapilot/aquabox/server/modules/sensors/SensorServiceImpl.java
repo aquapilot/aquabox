@@ -12,7 +12,6 @@ package org.aquapilot.aquabox.server.modules.sensors;
 import com.pi4j.io.i2c.I2CDevice;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
-import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -35,7 +34,7 @@ public class SensorServiceImpl implements SensorService {
    private ExecutorService executor;
 
    @Log
-   Logger logger;
+   Logger log;
 
    //setter method injector
    @Inject
@@ -50,12 +49,12 @@ public class SensorServiceImpl implements SensorService {
       I2CDevice tranceiver = gpioService.getI2CDevice();
       long waitTimeRead = 5;
 
-      logger.info("Sensor Service started");
+      log.info("Sensor Service started");
       executor = Executors.newSingleThreadExecutor();
       executor.submit(() -> {
          while (true) {
             int dataRead = tranceiver.read();
-            logger.debug("sensor >>" + dataRead);
+            log.debug("sensor >>" + dataRead);
             TimeUnit.SECONDS.sleep(waitTimeRead);
          }
       });
@@ -70,11 +69,6 @@ public class SensorServiceImpl implements SensorService {
       }
 
       executor.shutdownNow();
-      System.out.println(">> Sensor service stopped");
-   }
-
-   @Override
-   public void registerListener(SensorListener listener) {
-
+      log.info(">> Sensor service stopped");
    }
 }

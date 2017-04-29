@@ -10,7 +10,7 @@
 package org.aquapilot.aquabox.server.modules.notifier.services;
 
 import org.aquapilot.aquabox.server.common.Service;
-import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
+import org.aquapilot.aquabox.server.modules.notifier.model.Notification;
 
 /**
  * This class manage notifications
@@ -24,7 +24,7 @@ public interface NotifierService extends Service {
     *
     * @param notification
     */
-   void notify(NewSensorDetectedNotification notification);
+   void notify(Notification notification);
 
    void notifyNative();
 }

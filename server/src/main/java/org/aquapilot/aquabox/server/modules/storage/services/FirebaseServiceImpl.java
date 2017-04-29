@@ -56,12 +56,12 @@ public class FirebaseServiceImpl implements StorageService {
    }
 
    @Override
-   public void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon) {
+   public void saveSensor(String uuid, String name, SensorType type, AquapilotIcon icon) {
 
    }
 
    @Override
-   public void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon) {
+   public void saveSensor(String uuid, String name, Collection<SensorType> types, AquapilotIcon icon) {
 
    }
 
@@ -69,15 +69,15 @@ public class FirebaseServiceImpl implements StorageService {
    public void saveMeasure(String uuid, String newValue) {
 
       System.out.println("Save new measure");
-//      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
-//
-//      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
-//         if (databaseError != null) {
-//            System.out.println("Data could not be saved " + databaseError.getMessage());
-//         } else {
-//            System.out.println("Data saved successfully.");
-//         }
-//      });
+      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/aquabox");
+
+      ref.push().setValue(new Measure(uuid, newValue), (databaseError, databaseReference) -> {
+         if (databaseError != null) {
+            System.out.println("Data could not be saved " + databaseError.getMessage());
+         } else {
+            System.out.println("Data saved successfully.");
+         }
+      });
    }
 
    @Override
@@ -89,14 +89,15 @@ public class FirebaseServiceImpl implements StorageService {
       String dbName = this.settings.getDatabaseName();
       String databaseUrl = "https://" + dbName + ".firebaseio.com";
 
-      FileInputStream serviceAccount = new FileInputStream("./toremove.json");
+      try (FileInputStream serviceAccount = new FileInputStream("./toremove.json")) {
 
-      if (FirebaseApp.getApps().isEmpty()) {
-         FirebaseOptions options = new FirebaseOptions.Builder()
-               .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-               .setDatabaseUrl(databaseUrl)
-               .build();
-         FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+         if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                  .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
+                  .setDatabaseUrl(databaseUrl)
+                  .build();
+            FirebaseApp.initializeApp(options, FirebaseApp.DEFAULT_APP_NAME);
+         }
       }
 
    }

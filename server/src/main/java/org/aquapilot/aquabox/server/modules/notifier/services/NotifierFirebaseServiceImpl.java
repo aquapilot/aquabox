@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.aquapilot.aquabox.server.modules.logger.Log;
-import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
+import org.aquapilot.aquabox.server.modules.notifier.model.Notification;
 import org.aquapilot.aquabox.server.modules.settings.model.Settings;
 import org.slf4j.Logger;
 
@@ -72,18 +72,18 @@ public class NotifierFirebaseServiceImpl implements NotifierService {
    }
 
    @Override
-   public void notify(NewSensorDetectedNotification notification) {
+   public void notify(Notification notification) {
 
       System.out.println("Send notification in firebase queue");
-//      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
-//
-//      ref.push().setValue(notification, (databaseError, databaseReference) -> {
-//         if (databaseError != null) {
-//            System.out.println("Data could not be saved " + databaseError.getMessage());
-//         } else {
-//            System.out.println("Data saved successfully.");
-//         }
-//      });
+      DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/notifications");
+
+      ref.push().setValue(notification, (databaseError, databaseReference) -> {
+         if (databaseError != null) {
+            System.out.println("Data could not be saved " + databaseError.getMessage());
+         } else {
+            System.out.println("Data saved successfully.");
+         }
+      });
    }
 
    @Override

@@ -21,7 +21,6 @@ import org.aquapilot.aquabox.server.modules.sensors.event.SensorBatteryStatusEve
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorDetectedEventImpl;
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorUnreachableEventImpl;
 import org.aquapilot.aquabox.server.modules.sensors.event.SensorValueChangeEventImpl;
-import org.aquapilot.aquabox.server.modules.sensors.listener.SensorListener;
 import org.slf4j.Logger;
 
 import javax.inject.Inject;
@@ -129,10 +128,5 @@ public class SensorMockServiceImpl implements SensorService {
 
       this.executor.shutdownNow();
       this.log.debug(">> Sensor Service stopped");
-   }
-
-   @Override
-   public void registerListener(SensorListener listener) {
-
    }
 }

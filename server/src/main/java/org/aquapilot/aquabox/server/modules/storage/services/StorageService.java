@@ -35,22 +35,22 @@ public interface StorageService extends Service {
    /**
     * Save a sensor
     *
-    * @param UUID unique identifier of the sensor (stored in sensor EPROM)
+    * @param uuid unique identifier of the sensor (stored in sensor EPROM)
     * @param name displayed name
     * @param type describe the kind of sensor (what does it measures
     * @param icon an icon associated with this sensor
     */
-   void saveSensor(String UUID, String name, SensorType type, AquapilotIcon icon);
+   void saveSensor(String uuid, String name, SensorType type, AquapilotIcon icon);
 
    /**
     * Save a sensor measuring more than on thing. (ie: A moisture + temperature sensor)
     *
-    * @param UUID  unique identifier of the sensor (stored in sensor EPROM)
+    * @param uuid  unique identifier of the sensor (stored in sensor EPROM)
     * @param name  displayed name
     * @param types define what kind of measures does this sensor provide
     * @param icon  an icon associated with this sensor
     */
-   void saveSensor(String UUID, String name, Collection<SensorType> types, AquapilotIcon icon);
+   void saveSensor(String uuid, String name, Collection<SensorType> types, AquapilotIcon icon);
 
    /**
     * Save a sensor measure

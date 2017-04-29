@@ -12,12 +12,17 @@ package org.aquapilot.aquabox.server;
 import com.google.common.eventbus.Subscribe;
 import org.aquapilot.aquabox.api.event.AquaboxEvent;
 import org.aquapilot.aquabox.api.event.Event;
+import org.aquapilot.aquabox.api.event.sensor.SensorDetectedEvent;
+import org.aquapilot.aquabox.api.event.sensor.SensorUnreachableEvent;
+import org.aquapilot.aquabox.api.event.sensor.SensorValueChangeEvent;
 import org.aquapilot.aquabox.server.common.CreditsUtil;
 import org.aquapilot.aquabox.server.common.Service;
 import org.aquapilot.aquabox.server.common.SystemUtil;
 import org.aquapilot.aquabox.server.common.asciiart.FigletFontAsciiArtConverter;
 import org.aquapilot.aquabox.server.modules.gpio.services.GPIOService;
 import org.aquapilot.aquabox.server.modules.logger.Log;
+import org.aquapilot.aquabox.server.modules.notifier.model.NewSensorDetectedNotification;
+import org.aquapilot.aquabox.server.modules.notifier.model.SensorUnreachableNotification;
 import org.aquapilot.aquabox.server.modules.notifier.services.NotifierService;
 import org.aquapilot.aquabox.server.modules.plugins.manager.PluginManagerImpl;
 import org.aquapilot.aquabox.server.modules.plugins.service.PluginService;
@@ -52,6 +57,9 @@ public class Aquabox {
    private final Set<Service> registeredServices = new HashSet<>();
 
    private PluginService pluginService;
+   private StorageService storageService;
+   private NotifierService notifierService;
+
    private boolean started = false;
 
    @Inject
@@ -59,6 +67,8 @@ public class Aquabox {
          PluginService pluginService, NotifierService notifierService) {
 
       this.pluginService = pluginService;
+      this.storageService = storageService;
+      this.notifierService = notifierService;
 
       this.registerService(storageService);
       this.registerService(sensorService);
@@ -151,6 +161,25 @@ public class Aquabox {
          this.log.error("Unable to find an event refering to this implementation " + event.getClass());
       } else {
          System.out.println("CATCHED EVENT " + ev.name());
+
+         // Store data that has to
+         if (event instanceof SensorValueChangeEvent) {
+
+            SensorValueChangeEvent evt = (SensorValueChangeEvent) event;
+            this.storageService.saveMeasure(evt.getUUID(), evt.getNewValue());
+         }
+         // Send notification when needed
+         else if (event instanceof SensorDetectedEvent) {
+
+            SensorDetectedEvent evt = (SensorDetectedEvent) event;
+            NewSensorDetectedNotification notification = new NewSensorDetectedNotification(evt.getUUID());
+            this.notifierService.notify(notification);
+         } else if (event instanceof SensorUnreachableEvent) {
+
+            SensorUnreachableEvent evt = (SensorUnreachableEvent) event;
+            SensorUnreachableNotification notification = new SensorUnreachableNotification(evt.getUUID());
+            this.notifierService.notify(notification);
+         }
 
          // fire event to registered plugin listeners
          Map<Event, List<PluginManagerImpl.EventRegistration>> registeredEvents = this.pluginService.getRegisteredEvents();
